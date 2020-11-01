@@ -5,7 +5,7 @@ public class Weapons extends Items{
     private int sound;
     private int range;
 
-    Weapons(){
-
+    Weapons(int i){
+        super(i);
     }
 }

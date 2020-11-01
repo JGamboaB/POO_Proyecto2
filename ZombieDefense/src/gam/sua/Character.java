@@ -6,11 +6,14 @@ public class Character {
     private int movementRange;
     private int id;
 
-    Character(){
-
+    Character(int[] p, int h, int m, int i) {
+        position = p;
+        health = h;
+        movementRange = m;
+        id = i;
     }
 
-    public void isDead(){
-
+    public Boolean isDead(Character character) {
+        return (character.health == 0);
     }
 }
