@@ -1,6 +1,6 @@
 package gam.sua;
 
-public class Player {
+public class Player extends Character{
     private Boolean doubleDamage;
     private Boolean lessSound;
     private Boolean moreMov;

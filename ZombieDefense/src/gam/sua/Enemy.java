@@ -1,6 +1,6 @@
 package gam.sua;
 
-public class Enemy {
+public class Enemy extends Character{
     private int damage;
     private Boolean ghost;
     private Boolean poison;
