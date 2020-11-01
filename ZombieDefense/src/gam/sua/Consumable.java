@@ -3,7 +3,7 @@ package gam.sua;
 public class Consumable extends Items{
     private int[] properties;
 
-    Consumable(){
-
+    Consumable(int i){
+        super(i);
     }
 }

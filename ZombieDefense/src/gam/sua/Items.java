@@ -3,7 +3,7 @@ package gam.sua;
 public class Items {
     private int id;
 
-    Items(){
-
+    Items(int i){
+        id = i;
     }
 }

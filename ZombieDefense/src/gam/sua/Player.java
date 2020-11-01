@@ -9,7 +9,7 @@ public class Player extends Character{
     private Boolean luck;
     private int isPoisoned;
 
-    Player(){
-
+    Player(int[] p, int h, int m,int i){
+        super(p, h, m, i);
     }
 }

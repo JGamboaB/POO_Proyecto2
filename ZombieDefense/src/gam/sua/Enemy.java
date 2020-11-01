@@ -7,8 +7,8 @@ public class Enemy extends Character{
     private Boolean revive;
     private int visionRange;
 
-    Enemy(){
-
+    Enemy(int[] p, int h, int m,int i){
+        super(p, h, m, i);
     }
 
     public void dropItem(){
