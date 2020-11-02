@@ -8,8 +8,11 @@ public class Enemy extends Character{
     private int visionRange;
     private int[] objectivePos;
 
-    Enemy(int[] _position, int _health, int _range, int _id){
+    Enemy(int[] _position, int _health, int _range, int _id, String name){
         super(_position, _health, _range, _id);
+        if (name == ""){
+
+        }
     }
 
     public void dropItem(){
@@ -17,7 +20,7 @@ public class Enemy extends Character{
     }
 
     public void move(Enemy enemy, int[] newPos){
-        
+
     }
 
     public void attack(){

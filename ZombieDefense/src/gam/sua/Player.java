@@ -7,8 +7,6 @@ public class Player extends Character{
     private Boolean luck;
     private int isPoisoned;
 
-    // String hab = abilities
-
     Player(int[] _position, int _health, int _range, int _id, String name){
         super(_position,_health,_range,_id);
         isPoisoned = 0;
