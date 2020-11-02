@@ -6,17 +6,18 @@ public class Enemy extends Character{
     private Boolean poison;
     private Boolean revive;
     private int visionRange;
+    private int[] objectivePos;
 
-    Enemy(int[] p, int h, int m,int i){
-        super(p, h, m, i);
+    Enemy(int[] _position, int _health, int _range, int _id){
+        super(_position, _health, _range, _id);
     }
 
     public void dropItem(){
 
     }
 
-    public void move(){
-
+    public void move(Enemy enemy, int[] newPos){
+        
     }
 
     public void attack(){

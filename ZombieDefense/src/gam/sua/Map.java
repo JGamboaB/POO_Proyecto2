@@ -75,7 +75,7 @@ public class Map {
 
             c = (int) x/24;
             r = (int) y/24 - 1;
-            //System.out.println("Row: " + r + " Column: " + c);
+            System.out.println("Row: " + r + " Column: " + c);
 
             if (matrix[r][c] == 0)
                 System.out.println("Can walk");
@@ -126,5 +126,10 @@ public class Map {
 
     public static void main(String[] args){
         new Map();
+        Player Gringo = new Player(new int[]{17, 7}, 100, 3, 0, "Gringo");
+        Player David = new Player(new int[]{18, 6}, 100, 5, 1, "David" );
+        Player Amalia = new Player(new int[]{17, 7}, 150, 3, 2, "Amalia" );
+
+
     }
 }
