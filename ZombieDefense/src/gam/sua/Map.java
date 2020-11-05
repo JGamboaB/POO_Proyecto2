@@ -25,8 +25,10 @@ public class Map{
     private final JFrame frame = new JFrame();
     private final JPanel panel = new JPanel();
 
+    private int action = -1; //0 move, 1 attack, 2 equip
+    private int[] doneActs = new int[]{0,0,0};
     private int playersTurn = 0; //0,1,2
-    private int turn = 0; //0,1
+    private boolean turn = true;
     //Move all the creatures simultaneously?
 
     //Images
@@ -121,20 +123,6 @@ public class Map{
         matrix[r][c] = 0;
     }
 
-    void moveTEST(){
-        Scanner in = new Scanner(System.in);
-
-        System.out.println("Enter the row: ");
-        int r = in.nextInt();
-
-        System.out.println("Enter the col: ");
-        int c = in.nextInt();
-
-        Players[0].setPosition(new int[]{r,c});
-        cleanLeftBehind(Players[0]);
-        updateMatrix(r,c,4);
-    }
-
     void charMatrix(){
         for (int r = 0; r < 30; r++){
             for (int c = 0; c < 50; c++){
@@ -186,27 +174,30 @@ public class Map{
             double x = e.getX(), y = e.getY();
             int r, c;
 
-            System.out.println("x = " + x + ", y = " + y);
+            //System.out.println("x = " + x + ", y = " + y);
 
             c = (int) x/24;
             r = (int) y/24 - 1;
-            System.out.println("Row: " + r + " Column: " + c);
 
+            //System.out.println("Row: " + r + " Column: " + c);
+/*
             if (matrix[r][c] == 0)
                 System.out.println("Can walk");
             if (matrix[r][c] == 4)
                 System.out.println("Player");
             if (matrix[r][c] == 1)
                 System.out.println("Hit");
-
+*/
+            if (action == 0 && doneActs[0] == 0){
+                action = -1;
+                doneActs[0] = 1;
+                movePlayer(r,c);
+                updateFrame();
+            }
         }
 
-        @Override //PRESS ONLY ONCE TO TEST
-        public void mousePressed(MouseEvent e) {
-            //moveTEST();
-            //updateFrame();
-            //return;
-        }
+        @Override
+        public void mousePressed(MouseEvent e) {}
 
         @Override
         public void mouseReleased(MouseEvent e) {}
@@ -228,8 +219,36 @@ public class Map{
         @Override
         public void keyReleased(KeyEvent e) {
             System.out.println("A key has been pressed: "+e.getKeyChar());
+
+            if (e.getKeyChar() == 'm'){
+                action = 0;
+            }
+
+            if (e.getKeyChar() == 'n') {
+                changeTurn();
+                System.out.println(playersTurn);
+                doneActs = new int[]{0, 0, 0};
+                action = -1;
+            }
         }
     };
+
+    void movePlayer(int r, int c){
+        int[] posPlayer = Players[playersTurn].getPosition();
+        if (Players[playersTurn].getRange() < Math.abs(r-posPlayer[0]) || Players[playersTurn].getRange() < Math.abs(c-posPlayer[1])){
+            System.out.println("Above range");
+            doneActs[0] = 0;
+            return;
+        } if (matrix[r][c] != 0){
+            System.out.println("Can't Walk Over There");
+            doneActs[0] = 0;
+            return;
+        }
+
+        Players[playersTurn].setPosition(new int[]{r,c});
+        cleanLeftBehind(Players[playersTurn]);
+        updateMatrix(r,c,4);
+    }
 
 
     public void spawners(){
@@ -249,7 +268,9 @@ public class Map{
     }
 
     public void changeTurn(){
-
+        playersTurn++;
+        if (playersTurn == 3)
+            playersTurn = 0;
     }
 
     public void showImage(){

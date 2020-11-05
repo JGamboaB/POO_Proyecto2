@@ -19,7 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a9f648cc-6900-48e7-b410-c01aab064f7e" name="Default Changelist" comment="" />
+    <list default="true" id="a9f648cc-6900-48e7-b410-c01aab064f7e" name="Default Changelist" comment="Key Pressed can be recognized" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,8 +79,8 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.Map" />
       <item itemvalue="Application.Main" />
+      <item itemvalue="Application.Map" />
     </list>
     <recent_temporary>
       <list>
@@ -115,6 +115,10 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Key Pressed can be recognized" />
+    <option name="LAST_COMMIT_MESSAGE" value="Key Pressed can be recognized" />
+  </component>
   <component name="WindowStateProjectService">
     <state x="223" y="87" width="1089" height="714" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604256417008">
       <screen x="0" y="0" width="1536" height="864" />
@@ -133,25 +137,25 @@
     </state>
     <state x="976" y="238" key="FileChooserDialogImpl/0.0.1536.864@0.0.1536.864" timestamp="1604263533144" />
     <state x="1220" y="298" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1604254143668" />
-    <state width="1491" height="219" key="GridCell.Tab.0.bottom" timestamp="1604547910081">
+    <state width="1491" height="191" key="GridCell.Tab.0.bottom" timestamp="1604562527267">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1491" height="219" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1604547910081" />
+    <state width="1491" height="191" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1604562527267" />
     <state width="1877" height="295" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1604346202036" />
-    <state width="1491" height="219" key="GridCell.Tab.0.center" timestamp="1604547910081">
+    <state width="1491" height="191" key="GridCell.Tab.0.center" timestamp="1604562527267">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1491" height="219" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1604547910081" />
+    <state width="1491" height="191" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1604562527267" />
     <state width="1877" height="295" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1604346202036" />
-    <state width="1491" height="219" key="GridCell.Tab.0.left" timestamp="1604547910080">
+    <state width="1491" height="191" key="GridCell.Tab.0.left" timestamp="1604562527266">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1491" height="219" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1604547910080" />
+    <state width="1491" height="191" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1604562527266" />
     <state width="1877" height="295" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1604346202036" />
-    <state width="1491" height="219" key="GridCell.Tab.0.right" timestamp="1604547910081">
+    <state width="1491" height="191" key="GridCell.Tab.0.right" timestamp="1604562527267">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1491" height="219" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1604547910081" />
+    <state width="1491" height="191" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1604562527267" />
     <state width="1877" height="295" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1604346202036" />
     <state width="724" height="279" key="GridCell.Tab.1.bottom" timestamp="1604264395966">
       <screen x="0" y="0" width="1536" height="864" />
