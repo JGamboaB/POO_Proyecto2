@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gfx">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/assets/Viejo/gfx/gfx.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

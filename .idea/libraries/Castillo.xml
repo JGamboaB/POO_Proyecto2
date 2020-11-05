@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Castillo">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/assets/Mapa Tiled/Castillo.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

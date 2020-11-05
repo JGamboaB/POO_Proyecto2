@@ -23,15 +23,14 @@ public class Character {
     }
 
     public void setPosition(int[] position) {
-        this.oldPos = this.position;
+        if (this.position != position)
+            this.oldPos = this.position;
         this.position = position;
     }
 
     public int getHealth(){
         return health;
     }
-
-
 
     public void setHealth(int health){
         this.health = health;
