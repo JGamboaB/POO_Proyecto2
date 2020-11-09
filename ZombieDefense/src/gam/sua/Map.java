@@ -38,7 +38,7 @@ public class Map{
 
     public Map() throws IOException, FontFormatException {
         //Basic Stuff
-        int Width=1440+14,Height=800+40; //24x24 Pixels//720+37
+        int Width=1440+14,Height=800+40; //24x24 Pixels//720+37                 ARREGLAR
 
         frame.setTitle("Monster Defense");
         frame.setSize(Width,Height);
@@ -119,8 +119,8 @@ public class Map{
     }
 
     void charMatrix(){
-        for (int r = 0; r < 30; r++){
-            for (int c = 0; c < 50; c++){
+        for (int r = 0; r < 25; r++){
+            for (int c = 0; c < 45; c++){
 
                 //Players
                 if (matrix[r][c] == 4){
@@ -129,7 +129,7 @@ public class Map{
 
                         if (Players[i].getPosition()[0] == r && Players[i].getPosition()[1] == c){
                             //System.out.println("Here!");
-                            playerImgs[i].setBounds(c*24,r*24,24,24);
+                            playerImgs[i].setBounds(c*32,r*32,32,32);
                             panel.add(playerImgs[i]);
                             //break;
                         }
@@ -171,10 +171,10 @@ public class Map{
 
             //System.out.println("x = " + x + ", y = " + y);
 
-            c = (int) x/24;
-            r = (int) y/24 - 1;
+            c = (int) x/32;
+            r = (int) y/32 - 1;
 
-            //System.out.println("Row: " + r + " Column: " + c);
+            System.out.println("Row: " + r + " Column: " + c);
 /*
             if (matrix[r][c] == 0)
                 System.out.println("Can walk");
@@ -245,6 +245,25 @@ public class Map{
         updateMatrix(r,c,4);
     }
 
+    public void movePlayer2(int r, int c, Character character){
+        int[] posPlayer = character.getPosition();
+        if (character.getRange() < Math.abs(r-posPlayer[0]) || character.getRange() < Math.abs(c-posPlayer[1])) {
+            System.out.println("Above range");
+            doneActs[0] = 0;
+            return;
+        } if (matrix[r][c] != 0){
+            System.out.println("Can't Walk Over There");
+            doneActs[0] = 0;
+            return;
+        }
+        character.setPosition(new int[]{r,c});
+        cleanLeftBehind(character);
+        updateMatrix(r,c,4);
+    }
+
+    public int[][] getMatrix(){return matrix;}
+
+    public int valorPos(int r, int c){return matrix[r][c];}
 
     public void spawners(){
 
@@ -274,5 +293,6 @@ public class Map{
 
     public static void main(String[] args) throws IOException, FontFormatException {
         new Map();
+
     }
 }
