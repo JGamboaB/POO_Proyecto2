@@ -25,24 +25,29 @@ public class Menu extends JPanel{
     public void initText(){
         for (int i = 0; i < 2; i++){
 
-            float size = (i != 1) ? 14f:12f;
+            float size = (i != 1) ? 16f:12f;
             tNormalText[i].setFont(font.deriveFont(size));
             tNormalText[i].setForeground(Color.BLACK);
         }
     }
 
-    public void showMenu(Player player){//An int array parameter [0,0,0] should modify "used"
+    public void showMenu(Player player, int[] done){//An int array parameter [0,0,0] should modify "used"
         String[] used = {"","",""};
 
-        tNormal.setText("<html>Menu<br><br>Name: " + player.getName() + "<br>Health: " + player.getHealth() + "<br>Range: " +
+        for (int i = 0; i < 3; i++){
+            if (done[i] == 1)
+                used[i] = "USED";
+        }
+
+        tNormal.setText("<html>Name: " + player.getName() + "<br>Health: " + player.getHealth() + "<br>Range: " +
                 player.getRange() + "<br><br>Special Abilities: <br>+" + player.getSpecialAb()[0] + "<br>+" +
                 player.getSpecialAb()[1] + "<br>+" + player.getSpecialAb()[2] +
-                "<br><br>Actions: <br>[M] Move\t"+used[0]+"<br> [A] Attack\t"+used[1]+"<br> [I] Inventory\t"+used[2]+"<br> [N] Next Turn</html>");
+                "<br><br>Actions: <br>[M] Move      "+used[0]+"<br> [A] Attack      "+used[1]+"<br> [I] Inventory      "+used[2]+"<br> [N] Next Turn</html>");
 
         tNotes.setText("<html>*Can only do each action once per turn</html>");
 
-        tNormal.setBounds(10,-20,180,300);
-        tNotes.setBounds(10,20*14,180,50);
+        tNormal.setBounds(10,-30,180,300);
+        tNotes.setBounds(10,20*13,180,50);
 
         //Need to add USED
 
