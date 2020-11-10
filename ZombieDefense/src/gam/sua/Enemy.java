@@ -11,7 +11,7 @@ public class Enemy extends Character{
 
     Enemy(int[] _position, int _health, int _range, int _id, String name){
         super(_position, _health, _range, _id);
-        if (name == ""){
+        if (name == " "){
         }
     }
 

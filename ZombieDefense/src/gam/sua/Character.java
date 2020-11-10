@@ -36,12 +36,14 @@ public class Character {
         this.health = health;
     }
 
+    public void subtractHealth(int dmg) {this.health -= dmg; }
+
     public int getRange(){
         return range;
     }
 
-    public Boolean isDead(Character character) {
-        return (character.health == 0);
+    public Boolean isDead() {
+        return (health <= 0);
     }
 
 
