@@ -359,7 +359,7 @@ public class Map{
     public void attack(int r, int c){
         Player player = Players[playersTurn];
         int[] pos = player.getPosition();
-        if ((matrix[r][c] > 2 && matrix[r][c] < 7) && (player.getWeaponRange() >= Math.abs(r-pos[0]) && player.getRange() >= Math.abs(c-pos[1]))){
+        if ((matrix[r][c] > 2 && matrix[r][c] < 7) && (player.getWeaponRange() >= Math.abs(r-pos[0]) && player.getWeaponRange() >= Math.abs(c-pos[1]))){
             System.out.println("Valid Attack");
             Enemy enemy = getEnemyByPos(r,c);
             enemy.subtractHealth(player.getDMG());
