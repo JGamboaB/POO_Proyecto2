@@ -7,8 +7,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.util.Scanner; //
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 public class Map{
@@ -24,21 +25,28 @@ public class Map{
     private final Enemy[] Slimes = new Enemy[8];
     private final Enemy[] Zombies = new Enemy[6];
     private final Enemy[] Ghosts = new Enemy[6];
-    private final Enemy[] ActiveEnemies = new Enemy[30];
-
-    private final Menu Menu = new Menu();
+    private final List<Enemy> activeEnemies = new ArrayList<>();
+    //private final Enemy[] ActiveEnemies = new Enemy[30];
 
     private int[][] matrix;// = new int[50][30];
 
+    private final List<Items> sharedInventory = new ArrayList<>();
+    private final Inventory InvObject = new Inventory();
+    private final List<Items> inv = InvObject.getInventory();
+
+    //Frame and Panels
     private final JFrame frame = new JFrame();
     private final JPanel panel = new JPanel();
+    private final Menu Menu = new Menu();
+
 
     private int action = -1; //0 move, 1 attack, 2 equip
-    private int[] doneActs = new int[]{0,0,0};
-    private int[] numEnemies = new int[]{0,0,0,0}; //Skeleton, Slime, Zombie, Ghost
+    private int[] doneActs = new int[]{0,0};
+    private final int[] numEnemies = new int[]{0,0,0,0}; //Skeleton, Slime, Zombie, Ghost
     private int playersTurn = 0; //0,1,2
     private boolean turn = true;
     private int round = 0;
+    private final Random random = new Random();
     //Move all the creatures simultaneously?
 
     //Images
@@ -48,6 +56,7 @@ public class Map{
 
     private final ImageIcon rangeArea = new ImageIcon("images\\move.png");
     private final ImageIcon attackArea = new ImageIcon("images\\attack.png");
+    private final ImageIcon shine = new ImageIcon("images\\shine.png");
 
 
     public Map() throws IOException, FontFormatException {
@@ -85,7 +94,19 @@ public class Map{
 
     }
 
-    public void initMatrix(){ //0 can move, 1 occupied, 2 player, 3 skeleton, 4 slime, 5 zombie, 6 ghost, 7 boss, 8 chest
+    void initImgs(){
+        for (int i = 0; i < 7; i++){
+            if (i < 3)
+                playerImgs[i] = new JLabel(new ImageIcon("images\\CharIMG\\"+i+".png"));
+            else
+                enemyImgs[i-3] = new ImageIcon("images\\CharIMG\\"+i+".png");
+        }
+    }
+
+
+    // / / / / / / / / / / MATRIX
+
+    public void initMatrix(){ //0 can move, 1 occupied, 2 player, 3 skeleton, 4 slime, 5 zombie, 6 ghost, 7 boss, 8 chest, 9 sound, 10 item
         matrix = new int[][]{
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,8,8,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
@@ -113,15 +134,6 @@ public class Map{
         {1,0,0,0,0,0,1,1,1,1,0,0,1,0,1,0,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,0,0,1,0,0,0,1,1},
         {1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,8,8,0,1,1}
         };
-    }
-
-    void initImgs(){
-        for (int i = 0; i < 7; i++){
-            if (i < 3)
-                playerImgs[i] = new JLabel(new ImageIcon("images\\CharIMG\\"+i+".png"));
-            else
-                enemyImgs[i-3] = new ImageIcon("images\\CharIMG\\"+i+".png");
-        }
     }
 
     void updateMatrix(int r, int c, int matrixID){
@@ -176,6 +188,13 @@ public class Map{
                         ghost.setIcon(enemyImgs[3]);
                         panel.add(ghost);
                         break;
+
+                    case 10:
+                        JLabel itemOnFloor = new JLabel();
+                        itemOnFloor.setBounds(c*32,r*32,32,32);
+                        itemOnFloor.setIcon(shine);
+                        panel.add(itemOnFloor);
+                        break;
                 }
 
             }
@@ -186,6 +205,14 @@ public class Map{
         updateMatrix(13,7,2);
         updateMatrix(18,8,2);
         updateMatrix(18,7,2);
+
+        //Item on the floor to test
+        updateMatrix(24,44,10);
+
+        //Starting Weapons
+        addToSharedInv(InvObject.getItemById(0));
+        addToSharedInv(InvObject.getItemById(1));
+        addToSharedInv(InvObject.getItemById(2));
     }
 
     void updateFrame(){
@@ -204,6 +231,63 @@ public class Map{
         frame.repaint();
     }
 
+    public int[][] getMatrix(){return matrix;}
+
+    public int valorPos(int r, int c){return matrix[r][c];}
+
+
+    // / / / / / / / / ACTIONS / / / / / / / / //
+
+    //ACTIONS KEYBOARD
+    KeyListener keyboard = new KeyListener() {
+        @Override
+        public void keyTyped(KeyEvent e) {}
+
+        @Override
+        public void keyPressed(KeyEvent e) {}
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            //System.out.println("A key has been pressed: "+e.getKeyChar());
+
+            if (e.getKeyChar() == 'm'){
+                if (doneActs[0] == 0)
+                    showRangeArea(Players[playersTurn]);
+                action = 0;
+            }
+
+            if (e.getKeyChar() == 'a'){
+                if (doneActs[1] == 0)
+                    showAttackRange(Players[playersTurn]);
+                action = 1;
+            }
+
+            if (e.getKeyChar() == 'i'){
+                if (action == -1){
+                    showInv();
+                    action = 2;
+                } else if (action == 2) {
+                    resetMenu();
+                }
+            }
+
+            if (action == 2){
+                if (java.lang.Character.isDigit(e.getKeyChar())){
+                    equipItem(Integer.parseInt(String.valueOf(e.getKeyChar()))-1);
+                    resetMenu();
+                }
+            }
+
+            if (e.getKeyChar() == 'n') {
+                changeTurn();
+                doneActs = new int[]{0, 0};
+                action = -1;
+                updateFrame();
+            }
+        }
+    };
+
+    //ACTIONS MOUSE CLICK
     MouseListener mouse = new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -245,39 +329,10 @@ public class Map{
         public void mouseExited(MouseEvent e) {}
     };
 
-    KeyListener keyboard = new KeyListener() {
-        @Override
-        public void keyTyped(KeyEvent e) {}
 
-        @Override
-        public void keyPressed(KeyEvent e) {}
+    // / / / / / / / / / / MOVEMENT
 
-        @Override
-        public void keyReleased(KeyEvent e) {
-            //System.out.println("A key has been pressed: "+e.getKeyChar());
-
-            if (e.getKeyChar() == 'm'){
-                if (doneActs[0] == 0)
-                    showRangeArea(Players[playersTurn]);
-                action = 0;
-            }
-
-            if (e.getKeyChar() == 'a'){
-                if (doneActs[1] == 0)
-                    showAttackRange(Players[playersTurn]);
-                action = 1;
-            }
-
-            if (e.getKeyChar() == 'n') {
-                changeTurn();
-                doneActs = new int[]{0, 0, 0};
-                action = -1;
-                updateFrame();
-            }
-        }
-    };
-
-    void showRangeArea(Player player){
+    void showRangeArea(Player player){ //print Area that the Player can Move to
         int range = player.getRange();
         int r = player.getPosition()[0], c = player.getPosition()[1];
         int x = (c-range)*32, y = (r-range)*32;
@@ -300,16 +355,23 @@ public class Map{
         frame.repaint();
     }
 
-    void showAttackRange(Player player){
-        int range = player.getWeaponRange();
+    void showRangeArea2(Player player){ //print Area that the Player can Move to
+        int range = player.getRange();
         int r = player.getPosition()[0], c = player.getPosition()[1];
-        int x = (c-range)*32, y = (r-range)*32;
-        int side = 32*(range*2+1);
+        //int x = (c-range)*32, y = (r-range)*32;
+        int x,y,i = 0;
 
-        JLabel rangeAtt = new JLabel();
-        rangeAtt.setBounds(x,y,side,side);
-        rangeAtt.setIcon(new ImageIcon(attackArea.getImage().getScaledInstance(side,side,Image.SCALE_FAST)));
-        panel.add(rangeAtt);
+        JLabel[] rangeView = new JLabel[(range*2+1)*(range*2+1)];
+        for (int r2 = r-range; r2<=(r+range); r2++){
+            for (int c2 = c-range; c2<=(c+range);c2++){
+                if (matrix[r2][c2] == 0 || matrix[r2][c2] == 9){
+                    x = (c2*32); y = (r2*32);
+                    rangeView[i].setBounds(x,y,32,32);
+                    rangeView[i].setIcon(new ImageIcon(rangeArea.getImage()));
+                    panel.add(rangeView[i]);
+                } i++;
+            }
+        }
 
         charMatrix();
         Menu.showMenu(Players[playersTurn],doneActs);
@@ -320,19 +382,34 @@ public class Map{
 
         frame.revalidate();
         frame.repaint();
-
     }
 
     void movePlayer(int r, int c){
         int[] posPlayer = Players[playersTurn].getPosition();
+
+        //Above range
         if (Players[playersTurn].getRange() < Math.abs(r-posPlayer[0]) || Players[playersTurn].getRange() < Math.abs(c-posPlayer[1])){
-            //System.out.println("Above range");
             doneActs[0] = 0;
             return;
-        } if (matrix[r][c] != 0){
-            //System.out.println("Can't Walk Over There");
+        }
+
+        //Chests
+        if (matrix[r][c] == 8){
+            addToSharedInv(InvObject.getItemById(8)); //REVIVE
+            matrix[r][c] = 1;
+            return;
+        }
+
+        //Non walking Spaces
+        if (matrix[r][c] != 0 && matrix[r][c] != 10){
             doneActs[0] = 0;
             return;
+        }
+
+        //Item On The Floor
+        if (matrix[r][c] == 10){
+            int pos = random.nextInt(inv.size());
+            addToSharedInv(inv.get(pos));
         }
 
         Players[playersTurn].setPosition(new int[]{r,c});
@@ -356,6 +433,50 @@ public class Map{
         updateMatrix(r,c,2);
     }
 
+    public static void wait(int ms){
+        try {
+            Thread.sleep(ms);
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void animMove(Character character, int matrixId, List<int[]> steps){
+        for (int[] coordinates : steps) {
+            character.setPosition(new int[]{coordinates[0], coordinates[1]});
+            cleanLeftBehind(character);
+            updateMatrix(coordinates[0], coordinates[1], matrixId);
+            charMatrix();
+            wait(1000);
+        }
+    }
+
+
+    // / / / / / / / / / / ATTACK
+
+    void showAttackRange(Player player){ //Print Area that the Player can Attack.
+        int range = player.getWeaponRange();
+        int r = player.getPosition()[0], c = player.getPosition()[1];
+        int x = (c-range)*32, y = (r-range)*32;
+        int side = 32*(range*2+1);
+
+        JLabel rangeAtt = new JLabel();
+        rangeAtt.setBounds(x,y,side,side);
+        rangeAtt.setIcon(new ImageIcon(attackArea.getImage().getScaledInstance(side,side,Image.SCALE_FAST)));
+        panel.add(rangeAtt);
+
+        charMatrix();
+        Menu.showMenu(Players[playersTurn],doneActs);
+
+        frame.add(Menu);
+        frame.add(panel);
+        frame.add(bg);
+
+        frame.revalidate();
+        frame.repaint();
+
+    }
+
     public void attack(int r, int c){
         Player player = Players[playersTurn];
         int[] pos = player.getPosition();
@@ -369,9 +490,77 @@ public class Map{
         }
     }
 
-    public int[][] getMatrix(){return matrix;}
 
-    public int valorPos(int r, int c){return matrix[r][c];}
+    // / / / / / / / / / / INVENTORY
+
+    public void showInv(){
+        Menu.removeAll();
+        Menu.showInventory(sharedInventory);
+
+        frame.add(Menu);
+        frame.add(panel);
+        frame.add(bg);
+
+        frame.revalidate();
+        frame.repaint();
+    }
+
+    public void addToSharedInv(Items item){
+        sharedInventory.add(item);
+        if (item.getId() < 7) //Only removes the Weapons from the possible items
+            inv.remove(item);
+    }
+
+    public void equipItem(int num){
+        if (num > sharedInventory.size())
+            return;
+
+        Items item = sharedInventory.get(num);
+        Player player = Players[playersTurn];
+
+        if (item instanceof Weapons){
+            player.setDMG(((Weapons) item).getDamage());
+            player.setWeaponRange(((Weapons) item).getRange());
+        } else {
+            if (item.getId() == 8) //REVIVE
+                player = lowestHealthPlayer(); //Gives the effects to the player on the lowest health or dead
+
+            player.addHealth(((Consumable) item).getHealth());
+            player.setIsPoisoned(((Consumable) item).curesPoison());
+            sharedInventory.remove(num);
+        }
+    }
+
+    public void resetMenu(){
+        Menu.removeAll();
+        Menu.showMenu(Players[playersTurn],doneActs);
+
+        frame.add(Menu);
+        frame.add(panel);
+        frame.add(bg);
+
+        frame.revalidate();
+        frame.repaint();
+        action = -1;
+    }
+
+
+    // / / / / / / / / / / PLAYERS
+
+    public Player lowestHealthPlayer(){
+        Player player = Players[0];
+
+        for (int i = 1; i < 3; i++){
+            if (Players[i].isDead() || Players[i].getHealth() < player.getHealth()){
+                player = Players[i];
+            }
+        }
+
+        return player;
+    }
+
+
+    // / / / / / / / / / / ENEMIES
 
     public int enemiesOnMatrix(){
         int res = 0;
@@ -384,61 +573,54 @@ public class Map{
     }
 
     public void checkActiveEnemies(){
-        int enemies = enemiesOnMatrix();
-
-        for (int i = 0; i < enemies; i++){
-            if (ActiveEnemies[i].isDead()){
-                for (int j = i+1; j<enemies;j++){
-                    if (!ActiveEnemies[j].isDead()) {
-                        ActiveEnemies[i] = ActiveEnemies[j];
-                        break;
-                    }
-                }
-            }
+        for (int i = 0; i < activeEnemies.size(); i++){
+            if (activeEnemies.get(i).isDead())
+                activeEnemies.remove(i);
         }
     }
 
     public Enemy getEnemyByPos(int r, int c){
-        int enemies = enemiesOnMatrix();
-
-        for (int i = 0; i < enemies; i++){
-            if (ActiveEnemies[i].getPosition()[0] == r && ActiveEnemies[i].getPosition()[1] == c)
-                return ActiveEnemies[i];
+        for (Enemy activeEnemy : activeEnemies) {
+            if (activeEnemy.getPosition()[0] == r && activeEnemy.getPosition()[1] == c)
+                return activeEnemy;
         }
-
         return null;
     }
 
     public void enemyDeath(Enemy enemy){
         if (enemy.isDead()){
-            matrix[enemy.getPosition()[0]][enemy.getPosition()[1]] = 0;
+            boolean drop = random.nextBoolean();
+            int matrixId = (drop)? 10:0;
+
+            if (Players[playersTurn].getLuck()) //If LUCK, always drop loot
+                matrixId = 10;
+
+            matrix[enemy.getPosition()[0]][enemy.getPosition()[1]] = matrixId;
         }
     }
 
     public void createEnemy(int[] position, int matrixId, int id){
-        int enemiesOnScreen = enemiesOnMatrix();
-
-        switch (matrixId){
-            case 3:
-                Skeletons[numEnemies[0]] = new Enemy(position, 10,2,id," ");
-                ActiveEnemies[enemiesOnScreen] = Skeletons[numEnemies[0]];
+        switch (matrixId) {
+            case 3 -> {
+                Skeletons[numEnemies[0]] = new Enemy(position, 10, 2, id, " ");
+                activeEnemies.add(Skeletons[numEnemies[0]]);
                 numEnemies[0]++;
-                break;
-            case 4:
-                Slimes[numEnemies[1]] = new Enemy(position,5,3,id," ");
-                ActiveEnemies[enemiesOnScreen] = Slimes[numEnemies[1]];
+            }
+            case 4 -> {
+                Slimes[numEnemies[1]] = new Enemy(position, 5, 3, id, " ");
+                activeEnemies.add(Slimes[numEnemies[1]]);
                 numEnemies[1]++;
-                break;
-            case 5:
-                Zombies[numEnemies[2]] = new Enemy(position,15,2,id," ");
-                ActiveEnemies[enemiesOnScreen] = Zombies[numEnemies[2]];
+            }
+            case 5 -> {
+                Zombies[numEnemies[2]] = new Enemy(position, 15, 2, id, " ");
+                activeEnemies.add(Zombies[numEnemies[2]]);
                 numEnemies[2]++;
-                break;
-            case 6:
-                Ghosts[numEnemies[3]] = new Enemy(position,20,4,id," ");
-                ActiveEnemies[enemiesOnScreen] = Ghosts[numEnemies[3]];
+            }
+            case 6 -> {
+                Ghosts[numEnemies[3]] = new Enemy(position, 20, 4, id, " ");
+                activeEnemies.add(Ghosts[numEnemies[3]]);
                 numEnemies[3]++;
-                break;
+            }
         }
     }
 
@@ -454,6 +636,9 @@ public class Map{
         }
     }
 
+
+    // / / / / / / / / / / TURN
+
     public void changeTurn(){
         playersTurn++;
         if (playersTurn == 3){
@@ -465,12 +650,17 @@ public class Map{
         }
     }
 
+
+    // / / / / / / / / / / END GAME
+
     public void defeat(){}
 
     public void victory(){}
 
+
+     // / / / / / / / / / / CLASS
+
     public static void main(String[] args) throws IOException, FontFormatException {
         new Map();
-
     }
 }

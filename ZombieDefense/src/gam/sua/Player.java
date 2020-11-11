@@ -1,14 +1,16 @@
 package gam.sua;
 
+import java.util.List;
+
 public class Player extends Character{
     private String name;
     private String[] specialAb;
 
-    private Boolean doubleDamage;
-    private Boolean lessSound;
-    private Boolean canEvade;
-    private Boolean luck;
-    private int isPoisoned;
+    private Boolean doubleDamage = false;
+    private Boolean lessSound = false;
+    private Boolean canEvade = false;
+    private Boolean luck = false;
+    private int isPoisoned = 0;
 
     //changes depending on the weapon equipped
     private int DMG;
@@ -23,8 +25,8 @@ public class Player extends Character{
             doubleDamage = true;
             lessSound = true;
             specialAb = new String[]{"Double Damage","Less Sound","Crossbow"};
-            DMG = 10;
-            weaponRange = 4;
+            DMG = 5;
+            weaponRange = 3;
         }
         if (name == "David"){
             luck = true;
@@ -44,7 +46,21 @@ public class Player extends Character{
 
     public String[] getSpecialAb(){return specialAb;}
 
-    public int getDMG(){ return DMG; }
+    public int getDMG(){
+        int multi = (doubleDamage)? 2:1;
+        return DMG*multi;
+    }
+
+    public void setDMG(int DMG){this.DMG = DMG;}
 
     public int getWeaponRange(){ return weaponRange; }
+
+    public void setWeaponRange(int range){weaponRange = range;}
+
+    public void setIsPoisoned(boolean bool){
+        int multi = (bool)? 0:1;
+        isPoisoned*=multi;
+    }
+
+    public Boolean getLuck() {return luck;}
 }

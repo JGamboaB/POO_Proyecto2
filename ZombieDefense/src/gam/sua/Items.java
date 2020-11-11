@@ -1,9 +1,15 @@
 package gam.sua;
 
 public class Items {
-    private int id;
+    private final int id;
+    private final String name;
 
-    Items(int i){
+    Items(int i, String n){
         id = i;
+        name = n;
     }
+
+    public int getId() {return id;}
+
+    public String getName() {return name;}
 }
