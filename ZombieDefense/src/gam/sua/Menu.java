@@ -42,9 +42,9 @@ public class Menu extends JPanel{
         }
 
         tNormal.setText("<html>Name: " + player.getName() + "<br>Health: " + player.getHealth() + "<br>Move Range: " +
-                player.getRange() + "<br><br>Special Abilities: <br>+" + player.getSpecialAb()[0] + "<br>+" +
+                player.getSteps() + "<br><br>Special Abilities: <br>+" + player.getSpecialAb()[0] + "<br>+" +
                 player.getSpecialAb()[1] + "<br>+" + player.getSpecialAb()[2] +
-                "<br><br>Actions: <br>[M] Move      "+used[0]+"<br> [A] Attack      "+used[1]+"<br> [I] Inventory" +
+                "<br><br>Actions: <br>[M] Move      "+used[0]+"<br> [SPACE] Attack      "+used[1]+"<br> [I] Inventory" +
                 "<br> [N] Next Turn</html>");
 
         tNotes.setText("<html>*Can only do each action once per turn</html>");
@@ -56,14 +56,20 @@ public class Menu extends JPanel{
         this.add(tNotes);
     }
 
-    public void showInventory(List<Items> sharedInv){
+    public void showInventory(Player player, List<Items> sharedInv){
         String items = " ";
+        String equipped = equippedWeapon(player,sharedInv);
         List<String> alreadyIn = new ArrayList<>();
         int i = 1;
 
         for (Items item:sharedInv){
+            String equ = " ";
+
+            if (item.getName().equals(equipped))
+                equ = " (Equipped)";
+
             if (item instanceof Weapons){
-                items += "["+i+"] "+ item.getName() + " DMG: " + ((Weapons) item).getDamage() + " Range: " + ((Weapons) item).getRange() + "<br><br>";
+                items += "["+i+"] "+ item.getName() + " DMG: " + ((Weapons) item).getDamage() + " Range: " + ((Weapons) item).getRange() + equ +"<br><br>";
                 //i++;
             } else {
                 if (!alreadyIn.contains(item.getName())){
@@ -71,7 +77,8 @@ public class Menu extends JPanel{
                     //i++;
                 }
                 alreadyIn.add(item.getName());
-            } i++;
+            }
+            i++;
         }
 
         tNotes.setText("<html>Shared Inventory<br><br>"+ items +
@@ -90,6 +97,19 @@ public class Menu extends JPanel{
         }
 
         return res;
+    }
+
+    public String equippedWeapon(Player player, List<Items> sharedInv){
+        int DMG = player.getDMG();
+        if (player.getDoubleDamage())
+            DMG/=2;
+
+        int wRange = player.getWeaponRange();
+
+        for (Items item:sharedInv) {
+            if (((Weapons) item).getDamage() == DMG && ((Weapons) item).getRange() == wRange)
+                return item.getName();
+        } return null;
     }
 }
 

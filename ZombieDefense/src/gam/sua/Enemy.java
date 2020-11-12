@@ -31,17 +31,17 @@ public class Enemy extends Character{
 
     public int[] firstEmpty(Map map,int r,int c){   // Izquierda arriba
         boolean flag = true;
-        r -= getRange();
-        c -= getRange();
+        r -= getSteps();
+        c -= getSteps();
         while (flag){
-            if (r > getPosition()[0] + getRange() || r > 25){   // Si ya no esta en el range o en el mapa
+            if (r > getPosition()[0] + getSteps() || r > 25){   // Si ya no esta en el range o en el mapa
                 return getPosition();
             }
             if (map.valorPos(r,c) == 0 && c < 46){  // Si encuentra un espacio vacio en el mapa, lo retorna
                 break;
             }
-            if (c == getPosition()[1] + getRange()){    // Si c se pasa del range, siguiente row
-                c = getPosition()[1] - getRange();
+            if (c == getPosition()[1] + getSteps()){    // Si c se pasa del range, siguiente row
+                c = getPosition()[1] - getSteps();
                 r++;
             }else{
                 c++;
@@ -55,7 +55,7 @@ public class Enemy extends Character{
             case 1:
 
             case 2:
-                r -= getRange();
+                r -= getSteps();
                 while (r != getPosition()[0]){
                     if (r == objectivePos[0]){break;}
                     if (r < 0 || map.valorPos(r,c) != 0){

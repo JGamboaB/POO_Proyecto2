@@ -63,4 +63,6 @@ public class Player extends Character{
     }
 
     public Boolean getLuck() {return luck;}
+
+    public boolean getDoubleDamage(){return doubleDamage;}
 }

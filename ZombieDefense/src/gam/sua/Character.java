@@ -4,13 +4,13 @@ public class Character {
     private int[] position;
     private int[] oldPos;
     private int health;
-    private int range;
+    private int steps;
     private int id;
 
-    Character(int[] _position, int _health, int _range, int _id) {
+    Character(int[] _position, int _health, int _steps, int _id) {
         position = _position;
         health = _health;
-        range = _range;
+        steps = _steps;
         id = _id;
     }
 
@@ -44,8 +44,8 @@ public class Character {
 
     public void subtractHealth(int dmg) {this.health -= dmg; }
 
-    public int getRange(){
-        return range;
+    public int getSteps(){
+        return steps;
     }
 
     public Boolean isDead() {

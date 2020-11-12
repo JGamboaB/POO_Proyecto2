@@ -46,6 +46,8 @@ public class Map{
     private int playersTurn = 0; //0,1,2
     private boolean turn = true;
     private int round = 0;
+    private int steps = Gringo.getSteps();
+
     private final Random random = new Random();
     //Move all the creatures simultaneously?
 
@@ -250,18 +252,22 @@ public class Map{
         public void keyReleased(KeyEvent e) {
             //System.out.println("A key has been pressed: "+e.getKeyChar());
 
-            if (e.getKeyChar() == 'm'){
-                if (doneActs[0] == 0)
-                    showRangeArea(Players[playersTurn]);
+            //Move
+            if (e.getKeyChar() == 'm')
                 action = 0;
-            }
 
-            if (e.getKeyChar() == 'a'){
+            if (action == 0 && steps > 0)
+                movePlayerWASD(Players[playersTurn],e.getKeyChar());
+
+
+            //Attack
+            if (e.getKeyChar() == ' '){
                 if (doneActs[1] == 0)
                     showAttackRange(Players[playersTurn]);
                 action = 1;
             }
 
+            //Inventory
             if (e.getKeyChar() == 'i'){
                 if (action == -1){
                     showInv();
@@ -271,6 +277,7 @@ public class Map{
                 }
             }
 
+            //Equip Item
             if (action == 2){
                 if (java.lang.Character.isDigit(e.getKeyChar())){
                     equipItem(Integer.parseInt(String.valueOf(e.getKeyChar()))-1);
@@ -278,6 +285,7 @@ public class Map{
                 }
             }
 
+            //Next Turn
             if (e.getKeyChar() == 'n') {
                 changeTurn();
                 doneActs = new int[]{0, 0};
@@ -294,20 +302,13 @@ public class Map{
             double x = e.getX(), y = e.getY();
             int r, c;
 
-            //System.out.println("x = " + x + ", y = " + y);
-
             c = (int) x/32;
             r = (int) y/32 - 1;
 
+            //System.out.println("x = " + x + ", y = " + y);
             //System.out.println("Row: " + r + " Column: " + c);
 
-            if (action == 0 && doneActs[0] == 0){
-                action = -1;
-                doneActs[0] = 1;
-                movePlayer(r,c);
-                updateFrame();
-            }
-
+            //ATTACK
             if (action == 1 && doneActs[1] == 0){
                 action = -1;
                 doneActs[1] = 1;
@@ -332,94 +333,66 @@ public class Map{
 
     // / / / / / / / / / / MOVEMENT
 
-    void showRangeArea(Player player){ //print Area that the Player can Move to
-        int range = player.getRange();
+    public void movePlayerWASD(Player player, char dir){
         int r = player.getPosition()[0], c = player.getPosition()[1];
-        int x = (c-range)*32, y = (r-range)*32;
-        int side = 32*(range*2+1);
-
-        JLabel rangeView = new JLabel();
-        rangeView.setBounds(x,y,side,side);
-        rangeView.setIcon(new ImageIcon(rangeArea.getImage().getScaledInstance(side,side,Image.SCALE_FAST)));
-        panel.add(rangeView);
-
-
-        charMatrix();
-        Menu.showMenu(Players[playersTurn],doneActs);
-
-        frame.add(Menu);
-        frame.add(panel);
-        frame.add(bg);
-
-        frame.revalidate();
-        frame.repaint();
-    }
-
-    void showRangeArea2(Player player){ //print Area that the Player can Move to
-        int range = player.getRange();
-        int r = player.getPosition()[0], c = player.getPosition()[1];
-        //int x = (c-range)*32, y = (r-range)*32;
-        int x,y,i = 0;
-
-        JLabel[] rangeView = new JLabel[(range*2+1)*(range*2+1)];
-        for (int r2 = r-range; r2<=(r+range); r2++){
-            for (int c2 = c-range; c2<=(c+range);c2++){
-                if (matrix[r2][c2] == 0 || matrix[r2][c2] == 9){
-                    x = (c2*32); y = (r2*32);
-                    rangeView[i].setBounds(x,y,32,32);
-                    rangeView[i].setIcon(new ImageIcon(rangeArea.getImage()));
-                    panel.add(rangeView[i]);
-                } i++;
-            }
+        int rAdd = 0, cAdd = 0;
+        switch (dir){
+            case 'w':
+                rAdd = -1;
+                break;
+            case 's':
+                rAdd = 1;
+                break;
+            case 'a':
+                cAdd = -1;
+                break;
+            case 'd':
+                cAdd = 1;
+                break;
+            case 'i':
+                showInv();
+                action = 2;
+                return;
+            default:
+                return;
         }
 
-        charMatrix();
-        Menu.showMenu(Players[playersTurn],doneActs);
-
-        frame.add(Menu);
-        frame.add(panel);
-        frame.add(bg);
-
-        frame.revalidate();
-        frame.repaint();
-    }
-
-    void movePlayer(int r, int c){
-        int[] posPlayer = Players[playersTurn].getPosition();
-
-        //Above range
-        if (Players[playersTurn].getRange() < Math.abs(r-posPlayer[0]) || Players[playersTurn].getRange() < Math.abs(c-posPlayer[1])){
-            doneActs[0] = 0;
+        //Map boundaries
+        if (!(r+rAdd >= 0 && r+rAdd <= 25 && c+cAdd >= 0 && c+cAdd <= 45))
             return;
-        }
 
-        //Chests
-        if (matrix[r][c] == 8){
+        //Chest
+        if (matrix[r+rAdd][c+cAdd] == 8){
             addToSharedInv(InvObject.getItemById(8)); //REVIVE
-            matrix[r][c] = 1;
+            matrix[r+rAdd][c+cAdd] = 1;
             return;
         }
 
         //Non walking Spaces
-        if (matrix[r][c] != 0 && matrix[r][c] != 10){
-            doneActs[0] = 0;
+        if (matrix[r+rAdd][c+cAdd] != 0 && matrix[r+rAdd][c+cAdd] != 9 && matrix[r+rAdd][c+cAdd] != 10)
             return;
-        }
 
         //Item On The Floor
-        if (matrix[r][c] == 10){
+        if (matrix[r+rAdd][c+cAdd] == 10){
             int pos = random.nextInt(inv.size());
             addToSharedInv(inv.get(pos));
         }
 
-        Players[playersTurn].setPosition(new int[]{r,c});
-        cleanLeftBehind(Players[playersTurn]);
-        updateMatrix(r,c,2);
+        player.setPosition(new int[]{r+rAdd,c+cAdd});
+        cleanLeftBehind(player);
+        updateMatrix(r+rAdd,c+cAdd,2);
+
+        --steps;
+        if (steps == 0){
+            doneActs[0] = 1;
+            action = -1;
+        }updateFrame();
+
     }
 
     public void movePlayer2(int r, int c, Character character){
         int[] posPlayer = character.getPosition();
-        if (character.getRange() < Math.abs(r-posPlayer[0]) || character.getRange() < Math.abs(c-posPlayer[1])) {
+        if (character.getSteps() < Math.abs(r-posPlayer[0]) || character.getSteps() < Math.abs(c-posPlayer[1])) {
             //System.out.println("Above range");
             doneActs[0] = 0;
             return;
@@ -477,11 +450,39 @@ public class Map{
 
     }
 
+    void showAttackRange2(Player player){ //Print Area that the Player can Attack.
+        int range = player.getWeaponRange();
+        int r = player.getPosition()[0], c = player.getPosition()[1];
+        int x, y;
+
+
+        for (int r2 = r-range; r2<=(r+range); r2++){
+            for (int c2 = c-range; c2<=(c+range);c2++){
+                if (matrix[r2][c2] > 2 && matrix[r2][c2] < 8){
+                    x = (c2*32); y = (r2*32);
+                    JLabel rangeAtt = new JLabel(new ImageIcon(attackArea.getImage()));
+                    rangeAtt.setBounds(x,y,32,32);
+                    panel.add(rangeAtt);
+                }
+            }
+        }
+
+        charMatrix();
+        Menu.showMenu(Players[playersTurn],doneActs);
+
+        frame.add(Menu);
+        frame.add(panel);
+        frame.add(bg);
+
+        frame.revalidate();
+        frame.repaint();
+
+    }
+
     public void attack(int r, int c){
         Player player = Players[playersTurn];
         int[] pos = player.getPosition();
         if ((matrix[r][c] > 2 && matrix[r][c] < 7) && (player.getWeaponRange() >= Math.abs(r-pos[0]) && player.getWeaponRange() >= Math.abs(c-pos[1]))){
-            System.out.println("Valid Attack");
             Enemy enemy = getEnemyByPos(r,c);
             enemy.subtractHealth(player.getDMG());
             enemyDeath(enemy);
@@ -495,7 +496,7 @@ public class Map{
 
     public void showInv(){
         Menu.removeAll();
-        Menu.showInventory(sharedInventory);
+        Menu.showInventory(Players[playersTurn],sharedInventory);
 
         frame.add(Menu);
         frame.add(panel);
@@ -589,8 +590,8 @@ public class Map{
 
     public void enemyDeath(Enemy enemy){
         if (enemy.isDead()){
-            boolean drop = random.nextBoolean();
-            int matrixId = (drop)? 10:0;
+            int drop = random.nextInt(11);
+            int matrixId = (drop < 2)? 10:0;
 
             if (Players[playersTurn].getLuck()) //If LUCK, always drop loot
                 matrixId = 10;
@@ -624,15 +625,37 @@ public class Map{
         }
     }
 
-    public void spawners(){
+    public void spawners(){ //Validate that there is no player in the spawn points
         switch (round){
+            case 5:
+                createEnemy(new int[]{1,23},6,numEnemies[3]);
+                updateMatrix(1,23,6);
+                createEnemy(new int[]{1,25},6,numEnemies[3]);
+                updateMatrix(1,25,6);
+
+            case 4: //Ghosts
+                createEnemy(new int[]{13,34},6,numEnemies[3]);
+                updateMatrix(13,34,6);
+                createEnemy(new int[]{13,36},6,numEnemies[3]);
+                updateMatrix(13,36,6);
+
+            case 3: //Zombies
+                createEnemy(new int[]{19,39},5,numEnemies[2]);
+                updateMatrix(19,39,5);
+                createEnemy(new int[]{18,37},5,numEnemies[2]);
+                updateMatrix(18,37,5);
+
+            case 2: //Slimes
+                createEnemy(new int[]{16,43},4,numEnemies[1]);
+                updateMatrix(16,43,4);
+                createEnemy(new int[]{14,42},4,numEnemies[1]);
+                updateMatrix(14,42,4);
+
             case 1: //Skeletons
                 createEnemy(new int[]{21,41},3,numEnemies[0]);
                 updateMatrix(21,41,3);
                 createEnemy(new int[]{22,42},3,numEnemies[0]);
                 updateMatrix(22,42,3);
-                if (round == 1)
-                    break;
         }
     }
 
@@ -643,11 +666,12 @@ public class Map{
         playersTurn++;
         if (playersTurn == 3){
             playersTurn = 0;
-            //if (enemiesOnMatrix() == 0)
+            if (enemiesOnMatrix() == 0){
                 round++;
-            spawners();
+                spawners();
+            }
             turn = false;
-        }
+        } steps = Players[playersTurn].getSteps();
     }
 
 
@@ -664,3 +688,10 @@ public class Map{
         new Map();
     }
 }
+
+//Menu->Current Round, DMG, Weapon Range
+//Movement steps player WASD
+//Cancel Movement,Attack
+//INV Errors (Equipping weapons twice in the same turn, LIST in order that has all unique items first and then rep)
+//AI Movement to base by using equation of distance between two points
+
