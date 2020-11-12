@@ -203,6 +203,61 @@ public class Map{
         }
     }
 
+    void charMatrix2(){
+        for (int r = 0; r < 25; r++){
+            for (int c = 0; c < 45; c++){
+
+                switch (matrix[r][c]){
+                    case 2:
+                        for (int i = 0; i < 3; i++){
+
+                            if (Players[i].getPosition()[0] == r && Players[i].getPosition()[1] == c){
+                                playerImgs[i].setBounds(c*32,r*32,32,32);
+                                panel.add(playerImgs[i]);
+                            }
+
+                        } break;
+
+                    case 3:
+                        JLabel skeleton = new JLabel();
+                        skeleton.setBounds(c*32,r*32,32,32);
+                        skeleton.setIcon(enemyImgs[0]);
+                        panel.add(skeleton);
+                        break;
+
+                    case 4:
+                        JLabel slime = new JLabel();
+                        slime.setBounds(c*32,r*32,32,32);
+                        slime.setIcon(enemyImgs[1]);
+                        panel.add(slime);
+                        break;
+
+                    case 5:
+                        JLabel zombie = new JLabel();
+                        zombie.setBounds(c*32,r*32,32,32);
+                        zombie.setIcon(enemyImgs[2]);
+                        panel.add(zombie);
+                        break;
+
+                    case 6:
+                        JLabel ghost = new JLabel();
+                        ghost.setBounds(c*32,r*32,32,32);
+                        ghost.setIcon(enemyImgs[3]);
+                        panel.add(ghost);
+                        break;
+
+                    case 10:
+                        JLabel itemOnFloor = new JLabel();
+                        itemOnFloor.setBounds(c*32,r*32,32,32);
+                        itemOnFloor.setIcon(shine);
+                        panel.add(itemOnFloor);
+                        break;
+                }
+
+            }
+        }
+    }
+
     void startingPos(){
         updateMatrix(13,7,2);
         updateMatrix(18,8,2);
@@ -414,11 +469,11 @@ public class Map{
         }
     }
 
-    public void animMove(Character character, int matrixId, List<int[]> steps){
-        for (int[] coordinates : steps) {
-            character.setPosition(new int[]{coordinates[0], coordinates[1]});
+    public void animMove(Character character, int matrixId, List<Node> steps){
+        for (Node coordinates : steps) {
+            character.setPosition(new int[]{coordinates.getCoords()[0], coordinates.getCoords()[1]});
             cleanLeftBehind(character);
-            updateMatrix(coordinates[0], coordinates[1], matrixId);
+            updateMatrix(coordinates.getCoords()[0], coordinates.getCoords()[1], matrixId);
             charMatrix();
             wait(1000);
         }
@@ -681,8 +736,57 @@ public class Map{
 
     public void victory(){}
 
+    // / / / / / / / / / / AI
+
+    public int[] findMatrix(int num){
+        for (int r = 0; r < 25; r++) {
+            for (int c = 0; c < 45; c++) {
+                if (valorPos(r,c) == num){
+                    return new int[] {r,c};
+                }
+            }
+        }
+        return null;
+    }
+
+    public int[] isNear(int[] pos, int range, int val){     // returns the first value appearance or null if there is none
+        for (int r = 0; r < 25; r++) {
+            for (int c = 0; c < 45; c++) {
+                if (new int[] {r,c} == pos){
+                    for (int ri = r-range; ri <= r+range; ri++){
+                        for (int ci = c-range; ci <= c+range; ci++){
+                            if (valorPos(ri,ci) == val){
+                                return new int[] {ri,ci};
+                            }
+                        }
+                    }
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean isNearCoord(int[] pos, int range, int[] val){    // true if the coords are in range
+        for (int r = 0; r < 25; r++) {
+            for (int c = 0; c < 45; c++) {
+                if (new int[] {r,c} == pos){
+                    for (int ri = r-range; ri <= r+range; ri++){
+                        for (int ci = c-range; ci <= c+range; ci++){
+                            if (new int[] {ri,ci} == val){
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
 
      // / / / / / / / / / / CLASS
+
 
     public static void main(String[] args) throws IOException, FontFormatException {
         new Map();

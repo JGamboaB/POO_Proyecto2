@@ -1,13 +1,15 @@
 package gam.sua;
+import java.util.List;
+import java.util.Collections;
 
 public class Enemy extends Character{
     private int damage;
     private Boolean ghost;
     private Boolean poison;
     private Boolean revive;
-    private int visionRange;
     private int[] objectivePos;
     private int[] lastPositions;
+    private int steps;
 
     Enemy(int[] _position, int _health, int _range, int _id, String name){
         super(_position, _health, _range, _id);
@@ -23,89 +25,122 @@ public class Enemy extends Character{
 
     }
 
-    public int[] getObjectivePos(){
-        int[] newObjective = objectivePos;
-
-        return newObjective;
+    public void getObjectivePos(Map map, int[] base){
+        if (map.isNear(getPosition(), 2, 2) != null){
+            objectivePos = getPosition();
+        } else if (map.isNear(getPosition(), getSteps(), 2) != null){
+            objectivePos = map.isNear(getPosition(), getSteps(), 2);
+        } else if (map.findMatrix(9) != null){
+            objectivePos = map.findMatrix(9);
+        } else {
+            objectivePos = base;
+        }
     }
 
-    public int[] firstEmpty(Map map,int r,int c){   // Izquierda arriba
-        boolean flag = true;
-        r -= getSteps();
-        c -= getSteps();
-        while (flag){
-            if (r > getPosition()[0] + getSteps() || r > 25){   // Si ya no esta en el range o en el mapa
-                return getPosition();
-            }
-            if (map.valorPos(r,c) == 0 && c < 46){  // Si encuentra un espacio vacio en el mapa, lo retorna
-                break;
-            }
-            if (c == getPosition()[1] + getSteps()){    // Si c se pasa del range, siguiente row
-                c = getPosition()[1] - getSteps();
-                r++;
-            }else{
-                c++;
+    // ========================___AI___===========================
+
+
+    public Node lowestFCost (List<Node> list){
+        Node lowest = new Node();
+        for (int i = 0; i < list.size(); i++){
+            if (list.get(i).getfCost() < lowest.getfCost()){
+                lowest = list.get(i);
             }
         }
-        return new int[] {r,c};
+        return lowest;
     }
 
-    public int[] look4Pos(Map map, int r, int c, int code){
-        switch (code){
-            case 1:
+    public Node[] getNeighbours(Node node){
+        Node[] array = null;
+        int i = 0;
+        for (int r = 0; r < 25; r++) {
+            for (int c = 0; c < 45; c++) {
+                if (new int[] {r,c} == node.getCoords()){
+                    for (int ri = r-getSteps(); ri <= r+getSteps(); ri++){
+                        for (int ci = c-getSteps(); ci <= c+getSteps(); ci++){
+                            if (new int[]{ri,ci} != node.getCoords()){
+                                array[i] = new Node(new int[]{ri, ci});
+                                i++;
+                            }
+                        }
+                    }
+                    return array;
+                }
+            }
+        }
+        return null;
+    }
 
-            case 2:
-                r -= getSteps();
-                while (r != getPosition()[0]){
-                    if (r == objectivePos[0]){break;}
-                    if (r < 0 || map.valorPos(r,c) != 0){
-                        r++;
+    // vertical || horizontal = 10, diagonal = 14
+    public int gCostAnterior(Node node, Node nodeAnterior){
+        if (node.getCoords()[0] == nodeAnterior.getCoords()[0] || node.getCoords()[1] == nodeAnterior.getCoords()[1]){
+            return 10;      // Horizontal o Vertical
+        }
+        return 14;          // Diagonal
+    }
+
+    public List<Node> finalPath(Node end){
+        List<Node> path = null;
+        path.add(end);
+        Node current = end;
+        while (current.getAnterior() != null){
+            path.add(current.getAnterior());
+            current = current.getAnterior();
+        }
+        Collections.reverse(path);
+        return path;
+    }
+
+    // retorna una lista de los pasos del enemigo o null si no se mueve o no encuentra camino
+    public List<Node> ai(Map map){
+        List<Node> open = null;
+        List<Node> closed = null;
+
+        Node startNode = new Node(getPosition());
+        Node endNode = new Node(objectivePos);
+        startNode.calculateHCost(objectivePos);
+        startNode.calculateFCost();
+        open.add(startNode);        // Beginning gam.sua.Node
+        boolean flag = true;        // Ends loop
+
+        if (map.isNear(getPosition(), 1, 2) != null){       // Is 1 position away
+            return null;
+        }
+
+        while (flag){
+            Node current = lowestFCost (open);
+
+            if (current.getCoords() == objectivePos){   // The end is reached
+                List<Node> path = finalPath(endNode);
+                for (int i = 0; i < path.size(); i++){
+                    if (i >= getSteps()){
+                        path.remove(i);
                     }
                 }
+                return path;
+            }
+
+            open.remove(current);
+            closed.add(current);
+
+            for (Node neighbour:getNeighbours(current)){
+                if (closed.contains(neighbour)){
+                    continue;
+                }
+
+                int tentativeGCost = current.getgCost() + gCostAnterior(current,neighbour);
+                if (tentativeGCost < neighbour.getgCost()){
+                    neighbour.setAnterior(current);
+                    neighbour.setgCost(tentativeGCost);
+                    neighbour.calculateHCost(objectivePos);
+                    neighbour.calculateFCost();
+
+                    if (!open.contains(neighbour)){
+                        open.add(neighbour);
+                    }
+                }
+            }
         }
-        return new int[] {r,c};
-    }
-
-    /*  1 2 3
-        4 5 6
-        7 8 9
-
-     5 = posicion actual  */
-
-    public int[] ai(Map map){
-        int[] position = getPosition();
-        int r = position[0],c = position[1];
-        int[] coords = {r,c};
-
-        if (position[0] > objectivePos[0] && position[1] > objectivePos[1]){     // 1
-            coords = look4Pos(map, r, c, 1);
-        }
-        if (position[0] > objectivePos[0] && position[1] == objectivePos[1]){    // 2
-
-        }
-        if (position[0] > objectivePos[0] && position[1] < objectivePos[1]){     // 3
-
-        }
-        if (position[0] == objectivePos[0] && position[1] > objectivePos[1]){    // 4
-
-        }
-        if (position[0] == objectivePos[0] && position[1] == objectivePos[1]){}  // 5
-
-        if (position[0] == objectivePos[0] && position[1] < objectivePos[1]){    // 6
-
-        }
-        if (position[0] < objectivePos[0] && position[1] > objectivePos[1]){     // 7
-
-        }
-        if (position[0] < objectivePos[0] && position[1] == objectivePos[1]){    // 8
-
-        }
-        if (position[0] == objectivePos[0] && position[1] > objectivePos[1]){    // 9
-
-        }
-
-        if (coords == position) {
-            return firstEmpty(map, r, c);
-        } return coords;
+        return null;    // No path found
     }
 }
