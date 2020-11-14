@@ -24,19 +24,19 @@ public class Player extends Character{
         if (name == "Gringo"){
             doubleDamage = true;
             lessSound = true;
-            specialAb = new String[]{"Double Damage","Less Sound","Crossbow"};
+            specialAb = new String[]{"Double Damage","Less Sound","Initial Crossbow"};
             DMG = 5;
             weaponRange = 3;
         }
         if (name == "David"){
             luck = true;
-            specialAb = new String[]{"Extra Movement","Luck","Mighty Sword"};
+            specialAb = new String[]{"Extra Movement","Luck","Initial Sword"};
             DMG = 5;
             weaponRange = 2;
         }
         if (name == "Amalia"){
             canEvade = true;
-            specialAb = new String[]{"Extra Health","Can Evade","Long Bow"};
+            specialAb = new String[]{"Extra Health","Can Evade","Initial Bow"};
             DMG = 5;
             weaponRange = 4;
         }

@@ -15,9 +15,9 @@ import java.util.Random;
 public class Map{
 
     //Players
-    private final Player Gringo = new Player(new int[]{13, 7}, 100, 3, 0, "Gringo");
-    private final Player David = new Player(new int[]{18, 7}, 100, 5, 1, "David" );
-    private final Player Amalia = new Player(new int[]{18, 8}, 150, 3, 2, "Amalia" );
+    private final Player Gringo = new Player(new int[]{13, 7}, 100, 10, 0, "Gringo");
+    private final Player David = new Player(new int[]{18, 7}, 100, 15, 1, "David" );
+    private final Player Amalia = new Player(new int[]{18, 8}, 150, 10, 2, "Amalia" );
     private final Player[] Players = {Gringo,David,Amalia};
 
     //Enemies
@@ -41,7 +41,7 @@ public class Map{
 
 
     private int action = -1; //0 move, 1 attack, 2 equip
-    private int[] doneActs = new int[]{0,0};
+    private int[] doneActs = new int[]{0,0,0};
     private final int[] numEnemies = new int[]{0,0,0,0}; //Skeleton, Slime, Zombie, Ghost
     private int playersTurn = 0; //0,1,2
     private boolean turn = true;
@@ -110,31 +110,31 @@ public class Map{
 
     public void initMatrix(){ //0 can move, 1 occupied, 2 player, 3 skeleton, 4 slime, 5 zombie, 6 ghost, 7 boss, 8 chest, 9 sound, 10 item
         matrix = new int[][]{
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,8,8,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,0,1,1,1,1,1,1,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,1,1,0,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,1,1,0,0,1,1,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
-        {1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1},
-        {1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
-        {1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,1,0,0,0,0,1,0},
-        {1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,0,0,0,1,0,0},
-        {1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0,0,1,0,0,0,0,0,0},
-        {1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0,0,1,0,0,0,1,0,0},
-        {1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,0,0,0,0,1,0,0},
-        {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
-        {1,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-        {1,0,0,0,0,0,1,1,1,1,0,0,1,0,1,0,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,0,0,1,0,0,0,1,1},
-        {1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,8,8,0,1,1}
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,8,8,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,0,1,1,1,1,1,1,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,1,1,0,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,1,1,0,0,1,1,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+                {1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,1,0,0,0,0,1,0},
+                {1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0},
+                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,0,0,0,1,0,0},
+                {1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0,0,1,0,0,0,0,0,0},
+                {1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,0,0,1,0,0,0,1,0,0},
+                {1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,0,0,0,0,1,0,0},
+                {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1},
+                {1,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                {1,0,0,0,0,0,1,1,1,1,0,0,1,0,1,0,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,0,0,1,0,0,0,1,1},
+                {1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,8,8,0,1,1}
         };
     }
 
@@ -263,9 +263,6 @@ public class Map{
         updateMatrix(18,8,2);
         updateMatrix(18,7,2);
 
-        //Item on the floor to test
-        updateMatrix(24,44,10);
-
         //Starting Weapons
         addToSharedInv(InvObject.getItemById(0));
         addToSharedInv(InvObject.getItemById(1));
@@ -278,7 +275,7 @@ public class Map{
         Menu.removeAll();
 
         charMatrix();
-        Menu.showMenu(Players[playersTurn],doneActs);
+        Menu.showMenu(Players[playersTurn],doneActs,round,steps);
 
         frame.add(Menu);
         frame.add(panel);
@@ -324,7 +321,7 @@ public class Map{
 
             //Inventory
             if (e.getKeyChar() == 'i'){
-                if (action == -1){
+                if (action == -1 && doneActs[2] == 0){
                     showInv();
                     action = 2;
                 } else if (action == 2) {
@@ -343,7 +340,7 @@ public class Map{
             //Next Turn
             if (e.getKeyChar() == 'n') {
                 changeTurn();
-                doneActs = new int[]{0, 0};
+                doneActs = new int[]{0, 0, 0};
                 action = -1;
                 updateFrame();
             }
@@ -494,7 +491,7 @@ public class Map{
         panel.add(rangeAtt);
 
         charMatrix();
-        Menu.showMenu(Players[playersTurn],doneActs);
+        Menu.showMenu(Players[playersTurn],doneActs,round,steps);
 
         frame.add(Menu);
         frame.add(panel);
@@ -523,7 +520,7 @@ public class Map{
         }
 
         charMatrix();
-        Menu.showMenu(Players[playersTurn],doneActs);
+        Menu.showMenu(Players[playersTurn],doneActs,round,steps);
 
         frame.add(Menu);
         frame.add(panel);
@@ -537,10 +534,15 @@ public class Map{
     public void attack(int r, int c){
         Player player = Players[playersTurn];
         int[] pos = player.getPosition();
-        if ((matrix[r][c] > 2 && matrix[r][c] < 7) && (player.getWeaponRange() >= Math.abs(r-pos[0]) && player.getWeaponRange() >= Math.abs(c-pos[1]))){
-            Enemy enemy = getEnemyByPos(r,c);
-            enemy.subtractHealth(player.getDMG());
-            enemyDeath(enemy);
+        if ((player.getWeaponRange() >= Math.abs(r-pos[0]) && player.getWeaponRange() >= Math.abs(c-pos[1]))){
+            if (matrix[r][c] > 2 && matrix[r][c] < 7){
+                Enemy enemy = getEnemyByPos(r,c);
+                enemy.subtractHealth(player.getDMG());
+                enemyDeath(enemy);
+            } if (matrix[r][c] == 8){ //Open Chest
+                addToSharedInv(InvObject.getItemById(8));
+                matrix[r][c] = 1;
+            }
         } else {
             doneActs[1] = 0;
         }
@@ -562,7 +564,10 @@ public class Map{
     }
 
     public void addToSharedInv(Items item){
-        sharedInventory.add(item);
+        int index = (!sharedInventory.contains(item))?0:sharedInventory.size();
+        sharedInventory.add(index,item);
+        //sharedInventory.add(item);
+
         if (item.getId() < 7) //Only removes the Weapons from the possible items
             inv.remove(item);
     }
@@ -585,11 +590,14 @@ public class Map{
             player.setIsPoisoned(((Consumable) item).curesPoison());
             sharedInventory.remove(num);
         }
+
+        doneActs[2] = 1;//
+        action = -1; //
     }
 
     public void resetMenu(){
         Menu.removeAll();
-        Menu.showMenu(Players[playersTurn],doneActs);
+        Menu.showMenu(Players[playersTurn],doneActs,round,steps);
 
         frame.add(Menu);
         frame.add(panel);
@@ -785,17 +793,12 @@ public class Map{
         return false;
     }
 
-     // / / / / / / / / / / CLASS
-
+    // / / / / / / / / / / CLASS
 
     public static void main(String[] args) throws IOException, FontFormatException {
         new Map();
     }
 }
 
-//Menu->Current Round, DMG, Weapon Range
-//Movement steps player WASD
+//Menu Images
 //Cancel Movement,Attack
-//INV Errors (Equipping weapons twice in the same turn, LIST in order that has all unique items first and then rep)
-//AI Movement to base by using equation of distance between two points
-

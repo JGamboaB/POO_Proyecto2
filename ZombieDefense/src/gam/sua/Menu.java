@@ -9,7 +9,6 @@ import java.util.List;
 
 public class Menu extends JPanel{
 
-    //private int opt = 0; //0 Menu - 1 Inventory
     private Items[] inventory;
 
     //Font
@@ -33,19 +32,19 @@ public class Menu extends JPanel{
         }
     }
 
-    public void showMenu(Player player, int[] done){//An int array parameter [0,0,0] should modify "used"
-        String[] used = {"",""};
+    public void showMenu(Player player, int[] done, int round, int steps){//An int array parameter [0,0,0] should modify "used"
+        String[] used = {"","",""};
 
-        for (int i = 0; i < 2; i++){
+        for (int i = 0; i < 3; i++){
             if (done[i] == 1)
                 used[i] = "USED";
         }
 
-        tNormal.setText("<html>Name: " + player.getName() + "<br>Health: " + player.getHealth() + "<br>Move Range: " +
-                player.getSteps() + "<br><br>Special Abilities: <br>+" + player.getSpecialAb()[0] + "<br>+" +
-                player.getSpecialAb()[1] + "<br>+" + player.getSpecialAb()[2] +
-                "<br><br>Actions: <br>[M] Move      "+used[0]+"<br> [SPACE] Attack      "+used[1]+"<br> [I] Inventory" +
-                "<br> [N] Next Turn</html>");
+        tNormal.setText("<html>Round - "+ round +"<br><br>"+ player.getName() +"<br>*Health: "+ player.getHealth() +
+                "<br>*Steps Left: "+steps+"<br>*DMG: "+ player.getDMG() +" Range: "+ player.getWeaponRange() +"<br><br>+"+
+                player.getSpecialAb()[0] +"<br>+"+ player.getSpecialAb()[1] +"<br>+"+ player.getSpecialAb()[2] +
+                "<br><br>[M] Move      "+ used[0] +"<br>[SPACE] Attack      "+ used[1] +"<br>[I] Inventory      "+
+                used[2] +"<br>[N] Next Turn</html>");
 
         tNotes.setText("<html>*Can only do each action once per turn</html>");
 
