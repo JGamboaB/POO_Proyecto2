@@ -17,7 +17,7 @@ public class Map{
     //Players
     private final Player Gringo = new Player(new int[]{13, 7}, 100, 10, 0, "Gringo");
     private final Player David = new Player(new int[]{18, 7}, 100, 15, 1, "David" );
-    private final Player Amalia = new Player(new int[]{18, 8}, 150, 10, 2, "Amalia" );
+    private final Player Amalia = new Player(new int[]{18, 9}, 150, 10, 2, "Amalia" );
     private final Player[] Players = {Gringo,David,Amalia};
 
     //Enemies
@@ -260,7 +260,7 @@ public class Map{
 
     void startingPos(){
         updateMatrix(13,7,2);
-        updateMatrix(18,8,2);
+        updateMatrix(18,9,2);
         updateMatrix(18,7,2);
 
         //Starting Weapons
@@ -316,8 +316,7 @@ public class Map{
             if (e.getKeyChar() == ' '){
                 if (doneActs[1] == 0){
                     showAttackRange(Players[playersTurn]);
-                    action = 1;
-                }
+                }action = 1;
             }
 
             //Inventory
@@ -333,7 +332,7 @@ public class Map{
             //Equip Item
             if (action == 2){
                 if (java.lang.Character.isDigit(e.getKeyChar())){
-                    if (Integer.parseInt(String.valueOf(e.getKeyChar())) < sharedInventory.size()){
+                    if (Integer.parseInt(String.valueOf(e.getKeyChar())) <= sharedInventory.size()){
                         equipItem(Integer.parseInt(String.valueOf(e.getKeyChar()))-1);
                         resetMenu();
                     }
@@ -567,8 +566,9 @@ public class Map{
     }
 
     public void addToSharedInv(Items item){
-        int index = (!sharedInventory.contains(item))?0:sharedInventory.size();
+        int index = (!sharedInventory.contains(item))?0:sharedInventory.size()-1; //Change page with R if it fails
         sharedInventory.add(index,item);
+
         //sharedInventory.add(item);
 
         if (item.getId() < 7) //Only removes the Weapons from the possible items
@@ -576,13 +576,11 @@ public class Map{
     }
 
     public void equipItem(int num){
-        if (num > sharedInventory.size())
-            return;
-
         Items item = sharedInventory.get(num);
         Player player = Players[playersTurn];
 
         if (item instanceof Weapons){
+            //sout
             player.setDMG(((Weapons) item).getDamage());
             player.setWeaponRange(((Weapons) item).getRange());
         } else {
@@ -803,6 +801,6 @@ public class Map{
     }
 }
 
-//Inventory after attacking error
+//Inventory after attacking (chest) error
 //Menu Images
 //Cancel Movement,Attack

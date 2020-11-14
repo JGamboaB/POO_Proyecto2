@@ -76,13 +76,12 @@ public class Menu extends JPanel{
 
             if (item instanceof Weapons){
                 items += "["+i+"] "+ item.getName() + " DMG: " + ((Weapons) item).getDamage() + " Range: " + ((Weapons) item).getRange() + equ +"<br><br>";
-                //i++;
             } else {
                 if (!alreadyIn.contains(item.getName())){
                     items += "["+i+"] "+ item.getName() + " " + amountInInv(sharedInv, item.getId())+ " in Inventory<br><br>";
-                    //i++;
                 }
                 alreadyIn.add(item.getName());
+                //items += "["+i+"] "+ item.getName() + "<br><br>";
             }
             i++;
         }
@@ -112,6 +111,8 @@ public class Menu extends JPanel{
         int wRange = player.getWeaponRange();
 
         for (Items item:sharedInv) {
+            if (item instanceof Consumable)
+                continue;
             if (((Weapons) item).getDamage() == DMG && ((Weapons) item).getRange() == wRange)
                 return item.getName();
         } return null;
