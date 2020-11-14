@@ -566,7 +566,7 @@ public class Map{
     }
 
     public void addToSharedInv(Items item){
-        int index = (!sharedInventory.contains(item))?0:sharedInventory.size()-1; //Change page with R if it fails
+        int index = (!sharedInventory.contains(item))?0:sharedInventory.size(); //Change page with R if it fails //-1
         sharedInventory.add(index,item);
 
         //sharedInventory.add(item);
@@ -576,6 +576,9 @@ public class Map{
     }
 
     public void equipItem(int num){
+        if (num < 1)
+            return;
+
         Items item = sharedInventory.get(num);
         Player player = Players[playersTurn];
 
@@ -801,6 +804,12 @@ public class Map{
     }
 }
 
-//Inventory after attacking (chest) error
-//Menu Images
-//Cancel Movement,Attack
+//Menu Images Weapons
+//Inventory starting from 0 so I can access all the items
+//Weapon Equipped only by one player
+//Animation of movement
+//AI implemented
+//Enemy abilities
+//Sound
+//Music
+//BOSS
