@@ -52,4 +52,5 @@ public class Character {
         return (health <= 0);
     }
 
+    public int getId() {return id;}
 }

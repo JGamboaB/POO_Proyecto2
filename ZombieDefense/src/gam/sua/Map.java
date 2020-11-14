@@ -314,9 +314,10 @@ public class Map{
 
             //Attack
             if (e.getKeyChar() == ' '){
-                if (doneActs[1] == 0)
+                if (doneActs[1] == 0){
                     showAttackRange(Players[playersTurn]);
-                action = 1;
+                    action = 1;
+                }
             }
 
             //Inventory
@@ -332,16 +333,18 @@ public class Map{
             //Equip Item
             if (action == 2){
                 if (java.lang.Character.isDigit(e.getKeyChar())){
-                    equipItem(Integer.parseInt(String.valueOf(e.getKeyChar()))-1);
-                    resetMenu();
+                    if (Integer.parseInt(String.valueOf(e.getKeyChar())) < sharedInventory.size()){
+                        equipItem(Integer.parseInt(String.valueOf(e.getKeyChar()))-1);
+                        resetMenu();
+                    }
                 }
             }
 
             //Next Turn
             if (e.getKeyChar() == 'n') {
                 changeTurn();
-                doneActs = new int[]{0, 0, 0};
                 action = -1;
+                doneActs = new int[]{0, 0, 0};
                 updateFrame();
             }
         }
@@ -539,7 +542,7 @@ public class Map{
                 Enemy enemy = getEnemyByPos(r,c);
                 enemy.subtractHealth(player.getDMG());
                 enemyDeath(enemy);
-            } if (matrix[r][c] == 8){ //Open Chest
+            } else if (matrix[r][c] == 8){ //Open Chest
                 addToSharedInv(InvObject.getItemById(8));
                 matrix[r][c] = 1;
             }
@@ -800,5 +803,6 @@ public class Map{
     }
 }
 
+//Inventory after attacking error
 //Menu Images
 //Cancel Movement,Attack

@@ -11,6 +11,9 @@ public class Menu extends JPanel{
 
     private Items[] inventory;
 
+    //Image
+    private final JLabel playerLabel = new JLabel();
+
     //Font
     private final Font font = Font.createFont(Font.TRUETYPE_FONT, new File("Font\\pixelmix.ttf"));
 
@@ -48,11 +51,15 @@ public class Menu extends JPanel{
 
         tNotes.setText("<html>*Can only do each action once per turn</html>");
 
+        playerLabel.setIcon(new ImageIcon("images\\CharIMG\\"+player.getId()+".png"));
+
         tNormal.setBounds(0,-30,230,300);
         tNotes.setBounds(0,20*13,230,50);
+        playerLabel.setBounds(170,10,32,32);
 
         this.add(tNormal);
         this.add(tNotes);
+        this.add(playerLabel);
     }
 
     public void showInventory(Player player, List<Items> sharedInv){
@@ -80,8 +87,7 @@ public class Menu extends JPanel{
             i++;
         }
 
-        tNotes.setText("<html>Shared Inventory<br><br>"+ items +
-                "</html>");
+        tNotes.setText("<html>Shared Inventory<br><br>"+ items + "</html>");
 
         tNotes.setBounds(0,0,230,300);
         this.add(tNotes);

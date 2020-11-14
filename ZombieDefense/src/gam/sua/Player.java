@@ -20,25 +20,28 @@ public class Player extends Character{
         super(_position,_health,_range,_id);
         name = _name;
         isPoisoned = 0;
+
         // Abilities
-        if (name == "Gringo"){
-            doubleDamage = true;
-            lessSound = true;
-            specialAb = new String[]{"Double Damage","Less Sound","Initial Crossbow"};
-            DMG = 5;
-            weaponRange = 3;
-        }
-        if (name == "David"){
-            luck = true;
-            specialAb = new String[]{"Extra Movement","Luck","Initial Sword"};
-            DMG = 5;
-            weaponRange = 2;
-        }
-        if (name == "Amalia"){
-            canEvade = true;
-            specialAb = new String[]{"Extra Health","Can Evade","Initial Bow"};
-            DMG = 5;
-            weaponRange = 4;
+        switch (name){
+            case "Gringo":
+                doubleDamage = true;
+                lessSound = true;
+                specialAb = new String[]{"Double Damage","Less Sound","Initial Crossbow"};
+                DMG = 5;
+                weaponRange = 3;
+                break;
+            case "David":
+                luck = true;
+                specialAb = new String[]{"Extra Movement","Luck","Initial Sword"};
+                DMG = 5;
+                weaponRange = 2;
+                break;
+            case "Amalia":
+                canEvade = true;
+                specialAb = new String[]{"Extra Health","Can Evade","Initial Bow"};
+                DMG = 5;
+                weaponRange = 4;
+                break;
         }
     }
 
