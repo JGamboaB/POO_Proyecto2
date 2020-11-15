@@ -148,25 +148,25 @@
     </state>
     <state x="976" y="238" key="FileChooserDialogImpl/0.0.1536.864@0.0.1536.864" timestamp="1605311160323" />
     <state x="1220" y="298" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1604254143668" />
-    <state width="1877" height="295" key="GridCell.Tab.0.bottom" timestamp="1605472983661">
-      <screen x="0" y="0" width="1920" height="1080" />
+    <state width="1491" height="136" key="GridCell.Tab.0.bottom" timestamp="1605475023538">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1491" height="136" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1605335650215" />
+    <state width="1491" height="136" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1605475023538" />
     <state width="1877" height="295" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1605472983661" />
-    <state width="1877" height="295" key="GridCell.Tab.0.center" timestamp="1605472983661">
-      <screen x="0" y="0" width="1920" height="1080" />
+    <state width="1491" height="136" key="GridCell.Tab.0.center" timestamp="1605475023538">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1491" height="136" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1605335650215" />
+    <state width="1491" height="136" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1605475023538" />
     <state width="1877" height="295" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1605472983661" />
-    <state width="1877" height="295" key="GridCell.Tab.0.left" timestamp="1605472983661">
-      <screen x="0" y="0" width="1920" height="1080" />
+    <state width="1491" height="136" key="GridCell.Tab.0.left" timestamp="1605475023538">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1491" height="136" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1605335650215" />
+    <state width="1491" height="136" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1605475023538" />
     <state width="1877" height="295" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1605472983661" />
-    <state width="1877" height="295" key="GridCell.Tab.0.right" timestamp="1605472983661">
-      <screen x="0" y="0" width="1920" height="1080" />
+    <state width="1491" height="136" key="GridCell.Tab.0.right" timestamp="1605475023538">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1491" height="136" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1605335650215" />
+    <state width="1491" height="136" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1605475023538" />
     <state width="1877" height="295" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1605472983661" />
     <state width="1877" height="363" key="GridCell.Tab.1.bottom" timestamp="1605432464908">
       <screen x="0" y="0" width="1920" height="1080" />
@@ -192,9 +192,10 @@
       <screen x="0" y="0" width="1536" height="864" />
     </state>
     <state x="540" y="245" key="com.intellij.testIntegration.createTest.CreateTestDialog/0.0.1536.864@0.0.1536.864" timestamp="1604538510907" />
-    <state x="505" y="276" width="909" height="629" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1605436219856">
-      <screen x="0" y="0" width="1920" height="1080" />
+    <state x="404" y="221" width="728" height="629" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1605474951065">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
+    <state x="404" y="221" width="728" height="629" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1536.864@0.0.1536.864" timestamp="1605474951065" />
     <state x="505" y="276" width="909" height="629" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.1080@0.0.1920.1080" timestamp="1605436219856" />
     <state x="623" y="235" width="672" height="678" key="search.everywhere.popup" timestamp="1604877440050">
       <screen x="0" y="0" width="1920" height="1080" />
@@ -208,14 +209,6 @@
           <url>file://$PROJECT_DIR$/src/gam/sua/Map.java</url>
           <line>629</line>
           <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/src/gam/sua/Map.java</url>
-          <line>757</line>
-          <properties class="gam.sua.Map" method="enemiesTurn">
-            <option name="EMULATED" value="true" />
-          </properties>
-          <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/gam/sua/Map.java</url>

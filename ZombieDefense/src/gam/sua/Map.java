@@ -360,7 +360,7 @@ public class Map{
             r = (int) y/32 - 1;
 
             //System.out.println("x = " + x + ", y = " + y);
-            System.out.println("Row: " + r + " Column: " + c);
+            //System.out.println("Row: " + r + " Column: " + c);
 
             //ATTACK
             if (action == 1 && doneActs[1] == 0){
@@ -474,9 +474,9 @@ public class Map{
             character.setPosition(new int[]{coordinates.getCoords()[0], coordinates.getCoords()[1]});
             cleanLeftBehind(character);
             updateMatrix(coordinates.getCoords()[0], coordinates.getCoords()[1], matrixId);
-            charMatrix();
+            //charMatrix();
             updateFrame();
-            wait(1000);
+            //wait(1000);
         }
     }
 
@@ -629,7 +629,6 @@ public class Map{
 
     // / / / / / / / / / / ENEMIES
 
-    // Array of active enemies or null if none
     public List<Enemy> getEnemies(){
         List<Enemy> res = new ArrayList<>();
         for (int r = 0; r < 25; r++){
@@ -742,6 +741,7 @@ public class Map{
     // / / / / / / / / / / TURN
 
     public void changeTurn(){
+        System.out.println("Enemies on matrix: " + enemiesOnMatrix());
         playersTurn++;
         if (playersTurn == 3){
             playersTurn = 0;
@@ -751,19 +751,26 @@ public class Map{
             } else {
                 enemiesTurn();
             }
-            turn = false;
+            //turn = false;
         } steps = Players[playersTurn].getSteps();
     }
 
     public void enemiesTurn(){
-        for (Enemy enemy: getEnemies()){
+        List<Enemy> enemies = getEnemies();
+
+        for (Enemy enemy: enemies){
+
+            if (enemy == null)//
+                continue;//
+
             enemy.getObjectivePos(this);
             List<Node> path = enemy.ai(this);
             if (path == null){
                 continue;
             }
+
             animMove(enemy, enemy.getId(), path);
-            wait(3000);
+            //wait(2000);
         }
     }
 
