@@ -1,4 +1,5 @@
 package gam.sua;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 
@@ -9,11 +10,15 @@ public class Enemy extends Character{
     private Boolean revive;
     private int[] objectivePos;
     private int[] lastPositions;
-    private int steps;
+    private int[] base;
 
-    Enemy(int[] _position, int _health, int _range, int _id, String name){
+    Enemy(int[] _position, int _health, int _range, int _id, String name, int[] objective){
         super(_position, _health, _range, _id);
-        if (name == " "){
+        base = objective;
+        objectivePos = new int[] {0,0};
+        ghost = false;
+        if (name == "ghost"){
+            ghost = true;
         }
     }
 
@@ -25,15 +30,19 @@ public class Enemy extends Character{
 
     }
 
-    public void getObjectivePos(Map map, int[] base){
-        if (map.isNear(getPosition(), 2, 2) != null){
-            objectivePos = getPosition();
-        } else if (map.isNear(getPosition(), getSteps(), 2) != null){
-            objectivePos = map.isNear(getPosition(), getSteps(), 2);
+    public int[] getoObjectivePos() {
+        return objectivePos;
+    }
+
+    public void getObjectivePos(Map map){
+        if (map.isNear(this.getPosition(), 2, 2) != null){
+            this.objectivePos = this.getPosition();
+        } else if (map.isNear(this.getPosition(), 5, 2) != null){
+            this.objectivePos = map.isNear(this.getPosition(), 5, 2);
         } else if (map.findMatrix(9) != null){
-            objectivePos = map.findMatrix(9);
+            this.objectivePos = map.findMatrix(9);
         } else {
-            objectivePos = base;
+            this.objectivePos = this.base;
         }
     }
 
@@ -41,8 +50,11 @@ public class Enemy extends Character{
 
 
     public Node lowestFCost (List<Node> list){
-        Node lowest = new Node();
-        for (int i = 0; i < list.size(); i++){
+        if (list.size() == 1){
+            return list.get(0);
+        }
+        Node lowest = list.get(0);
+        for (int i = 1; i < list.size(); i++){
             if (list.get(i).getfCost() < lowest.getfCost()){
                 lowest = list.get(i);
             }
@@ -51,14 +63,14 @@ public class Enemy extends Character{
     }
 
     public Node[] getNeighbours(Node node){
-        Node[] array = null;
+        Node[] array = new Node[8];
         int i = 0;
         for (int r = 0; r < 25; r++) {
             for (int c = 0; c < 45; c++) {
-                if (new int[] {r,c} == node.getCoords()){
-                    for (int ri = r-getSteps(); ri <= r+getSteps(); ri++){
-                        for (int ci = c-getSteps(); ci <= c+getSteps(); ci++){
-                            if (new int[]{ri,ci} != node.getCoords()){
+                if (r == node.getCoords()[0] && c == node.getCoords()[1]){
+                    for (int ri = r-1; ri <= r+1; ri++){
+                        for (int ci = c-1; ci <= c+1; ci++){
+                            if (ri != node.getCoords()[0] || ci != node.getCoords()[1]){
                                 array[i] = new Node(new int[]{ri, ci});
                                 i++;
                             }
@@ -80,43 +92,40 @@ public class Enemy extends Character{
     }
 
     public List<Node> finalPath(Node end){
-        List<Node> path = null;
+        List<Node> path = new ArrayList<>();
         path.add(end);
-        Node current = end;
-        while (current.getAnterior() != null){
-            path.add(current.getAnterior());
-            current = current.getAnterior();
+        while (end.getAnterior() != null){
+            path.add(end.getAnterior());
+            end = end.getAnterior();
         }
         Collections.reverse(path);
         return path;
     }
 
     // retorna una lista de los pasos del enemigo o null si no se mueve o no encuentra camino
+    // A* PathFinding
     public List<Node> ai(Map map){
-        List<Node> open = null;
-        List<Node> closed = null;
+        List<Node> open = new ArrayList<>();
+        List<Node> closed = new ArrayList<>();
 
-        Node startNode = new Node(getPosition());
-        Node endNode = new Node(objectivePos);
+        Node startNode = new Node(this.getPosition());
+        Node endNode = new Node(this.objectivePos);
         startNode.calculateHCost(objectivePos);
         startNode.calculateFCost();
         open.add(startNode);        // Beginning gam.sua.Node
         boolean flag = true;        // Ends loop
 
-        if (map.isNear(getPosition(), 1, 2) != null){       // Is 1 position away
+        int gCostTotal = 0;
+
+        if (map.isNear(this.getPosition(), 1, 2) != null){       // Is 1 position away
             return null;
         }
 
         while (flag){
             Node current = lowestFCost (open);
+            List<Node> path = finalPath(endNode);
 
-            if (current.getCoords() == objectivePos){   // The end is reached
-                List<Node> path = finalPath(endNode);
-                for (int i = 0; i < path.size(); i++){
-                    if (i >= getSteps()){
-                        path.remove(i);
-                    }
-                }
+            if ((current.getCoords()[0] == this.objectivePos[0] && current.getCoords()[1] == this.objectivePos[1]) || path.size() >= 5){   // The end is reached
                 return path;
             }
 
@@ -124,16 +133,18 @@ public class Enemy extends Character{
             closed.add(current);
 
             for (Node neighbour:getNeighbours(current)){
-                if (closed.contains(neighbour)){
+                if ((map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) != 0 && !this.ghost) || closed.contains(neighbour)){
                     continue;
                 }
-
-                int tentativeGCost = current.getgCost() + gCostAnterior(current,neighbour);
+                neighbour.setgCost(gCostTotal + gCostAnterior(current,neighbour));
+                int tentativeGCost = current.getgCost() + neighbour.gethCost();
                 if (tentativeGCost < neighbour.getgCost()){
                     neighbour.setAnterior(current);
                     neighbour.setgCost(tentativeGCost);
-                    neighbour.calculateHCost(objectivePos);
+                    neighbour.calculateHCost(this.objectivePos);
                     neighbour.calculateFCost();
+                    endNode = neighbour;
+                    gCostTotal = gCostAnterior(current,neighbour);
 
                     if (!open.contains(neighbour)){
                         open.add(neighbour);

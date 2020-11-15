@@ -360,7 +360,7 @@ public class Map{
             r = (int) y/32 - 1;
 
             //System.out.println("x = " + x + ", y = " + y);
-            //System.out.println("Row: " + r + " Column: " + c);
+            System.out.println("Row: " + r + " Column: " + c);
 
             //ATTACK
             if (action == 1 && doneActs[1] == 0){
@@ -475,6 +475,7 @@ public class Map{
             updateMatrix(coordinates.getCoords()[0], coordinates.getCoords()[1], matrixId);
             charMatrix();
             wait(1000);
+            updateFrame();
         }
     }
 
@@ -630,6 +631,18 @@ public class Map{
 
     // / / / / / / / / / / ENEMIES
 
+    // Array of active enemies or null if none
+    public List<Enemy> getEnemies(){
+        List<Enemy> res = new ArrayList<>();
+        for (int r = 0; r < 25; r++){
+            for (int c = 0; c < 45; c++){
+                if (matrix[r][c] > 2 && matrix[r][c] < 7) {
+                    res.add(getEnemyByPos(r, c));
+                }
+            }
+        } return res;
+    }
+
     public int enemiesOnMatrix(){
         int res = 0;
         for (int r = 0; r < 25; r++){
@@ -649,8 +662,9 @@ public class Map{
 
     public Enemy getEnemyByPos(int r, int c){
         for (Enemy activeEnemy : activeEnemies) {
-            if (activeEnemy.getPosition()[0] == r && activeEnemy.getPosition()[1] == c)
+            if (activeEnemy.getPosition()[0] == r && activeEnemy.getPosition()[1] == c) {
                 return activeEnemy;
+            }
         }
         return null;
     }
@@ -670,22 +684,22 @@ public class Map{
     public void createEnemy(int[] position, int matrixId, int id){
         switch (matrixId) {
             case 3 -> {
-                Skeletons[numEnemies[0]] = new Enemy(position, 10, 2, id, " ");
+                Skeletons[numEnemies[0]] = new Enemy(position, 10, 2, id, " ", new int[] {12,7});
                 activeEnemies.add(Skeletons[numEnemies[0]]);
                 numEnemies[0]++;
             }
             case 4 -> {
-                Slimes[numEnemies[1]] = new Enemy(position, 5, 3, id, " ");
+                Slimes[numEnemies[1]] = new Enemy(position, 5, 3, id, " ", new int[] {3,14});
                 activeEnemies.add(Slimes[numEnemies[1]]);
                 numEnemies[1]++;
             }
             case 5 -> {
-                Zombies[numEnemies[2]] = new Enemy(position, 15, 2, id, " ");
+                Zombies[numEnemies[2]] = new Enemy(position, 15, 2, id, " ", new int[] {11,14});
                 activeEnemies.add(Zombies[numEnemies[2]]);
                 numEnemies[2]++;
             }
             case 6 -> {
-                Ghosts[numEnemies[3]] = new Enemy(position, 20, 4, id, " ");
+                Ghosts[numEnemies[3]] = new Enemy(position, 20, 4, id, " ", new int[] {5,14});
                 activeEnemies.add(Ghosts[numEnemies[3]]);
                 numEnemies[3]++;
             }
@@ -736,9 +750,23 @@ public class Map{
             if (enemiesOnMatrix() == 0){
                 round++;
                 spawners();
+            } else {
+                enemiesTurn();
             }
             turn = false;
         } steps = Players[playersTurn].getSteps();
+    }
+
+    public void enemiesTurn(){
+        for (Enemy enemy: getEnemies()){
+            enemy.getObjectivePos(this);
+            List<Node> path = enemy.ai(this);
+            if (path == null){
+                continue;
+            }
+            animMove(enemy, enemy.getId(), path);
+            wait(3000);
+        }
     }
 
 

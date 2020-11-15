@@ -118,5 +118,3 @@ public class Menu extends JPanel{
         } return null;
     }
 }
-
-//https://stackoverflow.com/questions/685521/multiline-text-in-jlabel

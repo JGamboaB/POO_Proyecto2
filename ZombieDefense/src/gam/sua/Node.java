@@ -32,9 +32,9 @@ public class Node {
     public int getfCost() {
         return fCost;
     }
-    public int getgCost() {
-        return gCost;
-    }
+    public int getgCost() { return gCost; }
+    public int gethCost() { return hCost; }
+
     public Node getAnterior() {
         return anterior;
     }
@@ -43,6 +43,10 @@ public class Node {
     }
     public void setgCost(int gCost) {
         this.gCost = gCost;
+    }
+
+    public void setfCost(int fCost) {
+        this.fCost = fCost;
     }
 
     public void calculateFCost (){
@@ -59,55 +63,56 @@ public class Node {
 
      5 = posicion actual  */
 
-    public int calculateHCost (int[] end){
+    public void calculateHCost (int[] end){
         boolean flag = true;
+        int[] c = coords;
         int res = 0;
         while (flag){
-            if (coords[0] > end[0] && coords[1] > end[1]){     // 1
-                coords = new int[]{coords[0]-1, coords[1]-1};
+            if (c[0] > end[0] && c[1] > end[1]){     // 1
+                c = new int[]{c[0]-1, c[1]-1};
                 res += 14;
                 continue;
             }
-            if (coords[0] > end[0] && coords[1] == end[1]){    // 2
-                coords = new int[]{coords[0]-1, coords[1]};
+            if (c[0] > end[0] && c[1] == end[1]){    // 2
+                c = new int[]{c[0]-1, c[1]};
                 res += 10;
                 continue;
             }
-            if (coords[0] > end[0] && coords[1] < end[1]){     // 3
-                coords = new int[]{coords[0]-1, coords[1]+1};
+            if (c[0] > end[0] && c[1] < end[1]){     // 3
+                c = new int[]{c[0]-1, c[1]+1};
                 res += 14;
                 continue;
             }
-            if (coords[0] == end[0] && coords[1] > end[1]){    // 4
-                coords = new int[]{coords[0], coords[1]-1};
+            if (c[0] == end[0] && c[1] > end[1]){    // 4
+                c = new int[]{c[0], c[1]-1};
                 res += 10;
                 continue;
             }
-            if (coords[0] == end[0] && coords[1] == end[1]){   // 5
+            if (c[0] == end[0] && c[1] == end[1]){   // 5
                 flag = false;
                 break;
             }
-            if (coords[0] == end[0] && coords[1] < end[1]){    // 6
-                coords = new int[]{coords[0], coords[1]+1};
+            if (c[0] == end[0] && c[1] < end[1]){    // 6
+                c = new int[]{c[0], c[1]+1};
                 res += 10;
                 continue;
             }
-            if (coords[0] < end[0] && coords[1] > end[1]){     // 7
-                coords = new int[]{coords[0]+1, coords[1]-1};
+            if (c[0] < end[0] && c[1] > end[1]){     // 7
+                c = new int[]{c[0]+1, c[1]-1};
                 res += 14;
                 continue;
             }
-            if (coords[0] < end[0] && coords[1] == end[1]){    // 8
-                coords = new int[]{coords[0]+1, coords[1]};
+            if (c[0] < end[0] && c[1] == end[1]){    // 8
+                c = new int[]{c[0]+1, c[1]};
                 res += 10;
                 continue;
             }
-            if (coords[0] == end[0] && coords[1] > end[1]){    // 9
-                coords = new int[]{coords[0]+1, coords[1]+1};
+            if (c[0] == end[0] && c[1] > end[1]){    // 9
+                c = new int[]{c[0]+1, c[1]+1};
                 res += 14;
                 continue;
             }
         }
-        return res;
+        hCost = res;
     }
 }
