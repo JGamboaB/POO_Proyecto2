@@ -468,18 +468,6 @@ public class Map{
         }
     }
 
-    public void animMove(Character character, int matrixId, List<Node> steps){
-        for (Node coordinates : steps) {
-            System.out.println("a");
-            character.setPosition(new int[]{coordinates.getCoords()[0], coordinates.getCoords()[1]});
-            cleanLeftBehind(character);
-            updateMatrix(coordinates.getCoords()[0], coordinates.getCoords()[1], matrixId);
-            //charMatrix();
-            updateFrame();
-            //wait(1000);
-        }
-    }
-
 
     // / / / / / / / / / / ATTACK
 
@@ -706,33 +694,33 @@ public class Map{
     public void spawners(){ //Validate that there is no player in the spawn points
         switch (round){
             case 5:
-                createEnemy(new int[]{1,23},6,numEnemies[3]);
+                createEnemy(new int[]{1,23},6,6);
                 updateMatrix(1,23,6);
-                createEnemy(new int[]{1,25},6,numEnemies[3]);
+                createEnemy(new int[]{1,25},6,6);
                 updateMatrix(1,25,6);
 
             case 4: //Ghosts
-                createEnemy(new int[]{13,34},6,numEnemies[3]);
+                createEnemy(new int[]{13,34},6,6);
                 updateMatrix(13,34,6);
-                createEnemy(new int[]{13,36},6,numEnemies[3]);
+                createEnemy(new int[]{13,36},6,6);
                 updateMatrix(13,36,6);
 
             case 3: //Zombies
-                createEnemy(new int[]{19,39},5,numEnemies[2]);
+                createEnemy(new int[]{19,39},5,5);
                 updateMatrix(19,39,5);
-                createEnemy(new int[]{18,37},5,numEnemies[2]);
+                createEnemy(new int[]{18,37},5,5);
                 updateMatrix(18,37,5);
 
             case 2: //Slimes
-                createEnemy(new int[]{16,43},4,numEnemies[1]);
+                createEnemy(new int[]{16,43},4,4);
                 updateMatrix(16,43,4);
-                createEnemy(new int[]{14,42},4,numEnemies[1]);
+                createEnemy(new int[]{14,42},4,4);
                 updateMatrix(14,42,4);
 
             case 1: //Skeletons
-                createEnemy(new int[]{21,41},3,numEnemies[0]);
+                createEnemy(new int[]{21,41},3,3);
                 updateMatrix(21,41,3);
-                createEnemy(new int[]{22,42},3,numEnemies[0]);
+                createEnemy(new int[]{22,42},3,3);
                 updateMatrix(22,42,3);
         }
     }
@@ -772,6 +760,18 @@ public class Map{
             animMove(enemy, enemy.getId(), path);
             //wait(2000);
         }
+    }
+
+    public void animMove(Character character, int matrixId, List<Node> steps){
+        for (Node coordinates : steps) {
+            //System.out.println("a");
+            character.setPosition(new int[]{coordinates.getCoords()[0], coordinates.getCoords()[1]});
+            cleanLeftBehind(character);
+            updateMatrix(coordinates.getCoords()[0], coordinates.getCoords()[1], matrixId);
+            //charMatrix();
+            updateFrame();
+            //wait(1000);
+        } //updateFrame();
     }
 
 

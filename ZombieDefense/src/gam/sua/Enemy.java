@@ -50,6 +50,9 @@ public class Enemy extends Character{
 
 
     public Node lowestFCost (List<Node> list){
+        if (list.size() == 0){
+            return null;
+        }
         if (list.size() == 1){
             return list.get(0);
         }
@@ -122,6 +125,10 @@ public class Enemy extends Character{
         }
 
         while (flag){
+            if (lowestFCost(open) == null){
+                return null;
+            }
+
             Node current = lowestFCost (open);
             List<Node> path = finalPath(endNode);
 
