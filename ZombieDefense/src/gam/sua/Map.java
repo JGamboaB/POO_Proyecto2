@@ -470,12 +470,13 @@ public class Map{
 
     public void animMove(Character character, int matrixId, List<Node> steps){
         for (Node coordinates : steps) {
+            System.out.println("a");
             character.setPosition(new int[]{coordinates.getCoords()[0], coordinates.getCoords()[1]});
             cleanLeftBehind(character);
             updateMatrix(coordinates.getCoords()[0], coordinates.getCoords()[1], matrixId);
             charMatrix();
-            wait(1000);
             updateFrame();
+            wait(1000);
         }
     }
 

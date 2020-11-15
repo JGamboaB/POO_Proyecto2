@@ -12,6 +12,7 @@ public class Character {
         health = _health;
         steps = _steps;
         id = _id;
+        oldPos = new int[] {0,0};
     }
 
     public int[] getPosition() {
@@ -23,7 +24,7 @@ public class Character {
     }
 
     public void setPosition(int[] position) {
-        if (this.position != position)
+        if (this.position[0] != position[0] && this.position[1] != position[1])
             this.oldPos = this.position;
         this.position = position;
     }
