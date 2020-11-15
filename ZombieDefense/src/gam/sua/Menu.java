@@ -66,7 +66,7 @@ public class Menu extends JPanel{
         String items = " ";
         String equipped = equippedWeapon(player,sharedInv);
         List<String> alreadyIn = new ArrayList<>();
-        int i = 1;
+        int i = 0;
 
         for (Items item:sharedInv){
             String equ = " ";

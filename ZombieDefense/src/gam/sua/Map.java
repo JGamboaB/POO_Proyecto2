@@ -333,7 +333,7 @@ public class Map{
             if (action == 2){
                 if (java.lang.Character.isDigit(e.getKeyChar())){
                     if (Integer.parseInt(String.valueOf(e.getKeyChar())) <= sharedInventory.size()){
-                        equipItem(Integer.parseInt(String.valueOf(e.getKeyChar()))-1);
+                        equipItem(Integer.parseInt(String.valueOf(e.getKeyChar())));
                         resetMenu();
                     }
                 }
@@ -578,9 +578,6 @@ public class Map{
     }
 
     public void equipItem(int num){
-        if (num < 1)
-            return;
-
         Items item = sharedInventory.get(num);
         Player player = Players[playersTurn];
 
