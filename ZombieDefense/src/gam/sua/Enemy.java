@@ -6,9 +6,9 @@ import java.util.Collections;
 
 public class Enemy extends Character{
     private int damage;
-    private Boolean ghost;
-    private Boolean poison;
-    private Boolean revive;
+    private boolean ghost;
+    private boolean poison;
+    private boolean revive;
     private int[] objectivePos;
     private int[] lastPositions;
     private int[] base;
@@ -18,8 +18,25 @@ public class Enemy extends Character{
         base = objective;
         objectivePos = new int[] {0,0};
         ghost = false;
-        if (name == "ghost"){
-            ghost = true;
+        poison = false;
+        revive = false;
+        damage = 0;
+        switch (name){
+            case "ghost":
+                ghost = true;
+                damage = 10;
+                break;
+            case "skeleton":
+                damage = 15;
+                break;
+            case "zombie":
+                poison = true;
+                damage = 10;
+                break;
+            case "slime":
+                revive = true;
+                damage = 5;
+                break;
         }
     }
 
@@ -31,9 +48,10 @@ public class Enemy extends Character{
 
     }
 
-    public int[] getoObjectivePos() {
-        return objectivePos;
-    }
+    public boolean getPoison() { return poison; }
+    public boolean getRevive() { return revive; }
+    public int getDamage() { return damage; }
+    public void setRevive(boolean revive) { this.revive = revive; }
 
     public void getObjectivePos(Map map){
         if (map.isNear(this.getPosition(), 2, 2) != null){              // Jugador Cercano (Ataque, No Moverse)
@@ -161,7 +179,7 @@ public class Enemy extends Character{
         boolean getNear = false;    // Flag to get near
 
         if (map.isNear(this.getPosition(), 2, 2) != null || this.getPosition() == this.objectivePos){       // Is 1 position away or is in objective
-            return null;
+            return null;    // Dont Move
         }
 
         if (map.isNearCoord(this.getPosition(),5,this.objectivePos) && (map.valorPos(this.objectivePos[0],this.objectivePos[1]) != 0)){   // Has to get near
@@ -183,15 +201,15 @@ public class Enemy extends Character{
 
             for (Node neighbour:getNeighbours(current)){
 
-                if (Arrays.equals(this.objectivePos,neighbour.getCoords())){
+                if (Arrays.equals(this.objectivePos,neighbour.getCoords())){    // The end is reached
                     neighbour.setAnterior(current);
                     return finalPath(neighbour);
                 }
-                if (neighbour.getCoords()[0] < 0 || neighbour.getCoords()[0] >= 25 || neighbour.getCoords()[1] < 0 || neighbour.getCoords()[1] >= 45){      // Out of Map
-                    continue;
+                if (neighbour.getCoords()[0] < 0 || neighbour.getCoords()[0] >= 25 || neighbour.getCoords()[1] < 0 || neighbour.getCoords()[1] >= 45){
+                    continue;   // Out of Map
                 }
-                if ((map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) != 0 && !this.ghost) || (map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) == 6 && this.ghost) || inList(closed, neighbour.getCoords())){
-                    continue;
+                if ((map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) != 0 && map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) != 10 && !this.ghost) || (map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) == 6 && this.ghost) || inList(closed, neighbour.getCoords())){
+                    continue;   // Cant move there
                 }
 
                 if (shorterPath(neighbour, current) || !inList(open,neighbour.getCoords())){

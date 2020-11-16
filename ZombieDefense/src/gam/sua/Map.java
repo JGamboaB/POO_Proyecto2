@@ -367,7 +367,7 @@ public class Map{
             r = (int) y/32 - 1;
 
             //System.out.println("x = " + x + ", y = " + y);
-            System.out.println("Row: " + r + " Column: " + c);
+            //System.out.println("Row: " + r + " Column: " + c);
 
             //ATTACK
             if (action == 1 && doneActs[1] == 0){
@@ -653,6 +653,12 @@ public class Map{
 
     public void enemyDeath(Enemy enemy){
         if (enemy.isDead()){
+            if (enemy.getRevive()){     // Revive
+                enemy.setRevive(false);
+                enemy.setHealth(5);
+                return;
+            }
+
             int drop = random.nextInt(11);
             int matrixId = (drop < 2)? 10:0;
 
@@ -729,11 +735,17 @@ public class Map{
     public void changeTurn(){
         //System.out.println("Enemies on matrix: " + enemiesOnMatrix());
         playersTurn++;
+
         if (playersTurn == 3){
             playersTurn = 0;
             if (enemiesOnMatrix() == 0){
                 round++;
                 spawners();
+
+                for (Player player : Players){      // Poison Damage if player is poisoned
+                    player.poisonDamage();
+                }
+
             } else {
                 enemiesTurn();
             }
@@ -742,16 +754,22 @@ public class Map{
     }
 
     public void enemiesTurn(){
-        System.out.println("---");
+        //System.out.println("---");
         for (Enemy enemy: activeEnemies){
             enemy.getObjectivePos(this);
-            System.out.println(enemy.getoObjectivePos()[0] + " , " + enemy.getoObjectivePos()[1]);
+            //System.out.println(enemy.getoObjectivePos()[0] + " , " + enemy.getoObjectivePos()[1]);
             List<Node> path = enemy.ai(this);
+
+            if (isNear(enemy.getPosition(),2,2) != null){
+                enemyAttack (enemy, isNear(enemy.getPosition(),2,2));
+                //wait(1000);
+            }
 
             if (path == null)
                 continue;
 
             animMove(enemy, enemy.getId(), path);
+
             //wait(2000);
 
             /*//Enemy Movement
@@ -773,6 +791,21 @@ public class Map{
             //wait(1000);
             //System.out.println(coordinates.getCoords()[0] + " , " + coordinates.getCoords()[1]);
         } updateFrame();
+    }
+
+    public void enemyAttack (Enemy enemy, int[] playerPos){
+        Player objective = null;
+        for (Player player : Players){
+            if (Arrays.equals(player.getPosition(),playerPos)){
+                objective = player;
+            }
+        }
+
+        if (enemy.getPoison()){
+            objective.newIsPoisoned(3);
+        }
+
+        objective.setHealth(objective.getHealth()-enemy.getDamage());   // Attack
     }
 
 
@@ -799,8 +832,8 @@ public class Map{
         for (int r = 0; r < 25; r++) {
             for (int c = 0; c < 45; c++) {
                 if (r == pos[0] && c == pos[1]){
-                    for (int ri = r-range; ri <= r+range && ri < 25; ri++){
-                        for (int ci = c-range; ci <= c+range && ci < 45; ci++){
+                    for (int ri = r-range; ri <= r+range && ri < 25 && ri >= 0; ri++){
+                        for (int ci = c-range; ci <= c+range && ci < 45 && ci >= 0; ci++){
                             if (valorPos(ri,ci) == val){
                                 return new int[] {ri,ci};
                             }
@@ -817,8 +850,8 @@ public class Map{
         for (int r = 0; r < 25; r++) {
             for (int c = 0; c < 45; c++) {
                 if (r == pos[0] && c == pos[1]){
-                    for (int ri = r-range; ri <= r+range && ri < 25; ri++){
-                        for (int ci = c-range; ci <= c+range && ci < 45; ci++){
+                    for (int ri = r-range; ri <= r+range && ri < 25 && ri >= 0; ri++){
+                        for (int ci = c-range; ci <= c+range && ci < 45 && ci >= 0; ci++){
                             if (ri == val[0] && ci == val[1]){
                                 return true;
                             }
@@ -841,13 +874,15 @@ public class Map{
 
 /*
 MUST:
-SOUND
-ONLY ONE PERSON CAN EQUIP AN ITEM
-VICTORY/DEFEAT
-ENEMY ABILITIES
-ENEMY ATTACK
-SPAWN 5 SLIMES
-DELETE EXTRAS
+SOUND                               G
+ONLY ONE PERSON CAN EQUIP AN ITEM   G
+VICTORY/DEFEAT                      G
+ENEMY ABILITIES                     -
+ENEMY ATTACK                        -
+SPAWN 5 SLIMES                      G
+DELETE EXTRAS                       D
+BALANCE ENEMY DAMAGE & ABILITIES    GD
+PLAYER DEATH                        ???
 
 
 OPTIONAL:
@@ -855,4 +890,5 @@ MOVEMENT ANIMATIONS
 MUSIC
 BOSS
 MENU IMAGES WEAPONS
+ADDITIONAL EFFECTS
  */

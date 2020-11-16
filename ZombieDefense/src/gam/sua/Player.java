@@ -49,6 +49,8 @@ public class Player extends Character{
 
     public String[] getSpecialAb(){return specialAb;}
 
+    public int getIsPoisoned() { return isPoisoned; }
+
     public int getDMG(){
         int multi = (doubleDamage)? 2:1;
         return DMG*multi;
@@ -64,8 +66,16 @@ public class Player extends Character{
         int multi = (bool)? 0:1;
         isPoisoned*=multi;
     }
+    public void poisonDamage(){
+        if (this.isPoisoned != 0){  // starts in 3
+            isPoisoned--;
+            this.setHealth(getHealth()-3);   // final damage
+        }
+    }
 
     public Boolean getLuck() {return luck;}
 
     public boolean getDoubleDamage(){return doubleDamage;}
+
+    public void newIsPoisoned(int _isPoisoned) {this.isPoisoned = _isPoisoned;}
 }
