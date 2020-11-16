@@ -823,12 +823,19 @@ public class Map{
     }
 }
 
-//Menu Images Weapons
-//Inventory starting from 0 so I can access all the items
-//Weapon Equipped only by one player
-//Animation of movement
-//AI implemented
-//Enemy abilities
-//Sound
-//Music
-//BOSS
+
+/*
+MUST:
+SOUND
+ONLY ONE PERSON CAN EQUIP AN ITEM
+VICTORY/DEFEAT
+ENEMY ABILITIES
+ENEMY ATTACK
+
+
+OPTIONAL:
+MOVEMENT ANIMATIONS
+MUSIC
+BOSS
+MENU IMAGES WEAPONS
+ */

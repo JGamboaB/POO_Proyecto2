@@ -50,9 +50,6 @@ public class Enemy extends Character{
 
 
     public Node lowestFCost (List<Node> list){
-        if (list.size() == 0){
-            return null;
-        }
         if (list.size() == 1){
             return list.get(0);
         }
@@ -94,20 +91,105 @@ public class Enemy extends Character{
         return 14;          // Diagonal
     }
 
+    public int calculateGCost (Node node){
+        int res = 0;
+        while (node.getAnterior() != null){
+            res += gCostAnterior(node,node.getAnterior());
+            node = node.getAnterior();
+        }
+        return res;
+    }
+
+    public boolean shorterPath(Node neighbour, Node current){
+        Node node = neighbour;
+
+        node.setgCost(calculateGCost(node));
+        node.calculateHCost(this.objectivePos);
+        node.calculateFCost();
+        int viejo = node.getfCost();
+
+        node.setAnterior(current);
+        node.setgCost(calculateGCost(node));
+        node.calculateHCost(this.objectivePos);
+        node.calculateFCost();
+        int nuevo = node.getfCost();
+
+        if (nuevo < viejo){
+            return true;
+        }
+        return false;
+    }
+
     public List<Node> finalPath(Node end){
         List<Node> path = new ArrayList<>();
+        List<Node> res = new ArrayList<>();
         path.add(end);
         while (end.getAnterior() != null){
             path.add(end.getAnterior());
             end = end.getAnterior();
         }
         Collections.reverse(path);
-        return path;
+        path.remove(0);
+        for (int i = 0; i < path.size(); i++){
+            if (i < 5){
+                res.add(path.get(i));
+            }
+        }
+        return res;
     }
 
     // retorna una lista de los pasos del enemigo o null si no se mueve o no encuentra camino
     // A* PathFinding
-    public List<Node> ai(Map map){
+    public List<Node> ai (Map map){
+        List<Node> open = new ArrayList<>();
+        List<Node> closed = new ArrayList<>();
+
+        Node startNode = new Node(this.getPosition());
+        startNode.calculateHCost(objectivePos);
+        startNode.calculateFCost();
+        open.add(startNode);        // Beginning gam.sua.Node
+
+        if (map.isNear(this.getPosition(), 1, 2) != null){       // Is 1 position away
+            return null;
+        }
+        if (map.valorPos(this.objectivePos[0], this.objectivePos[1]) != 0 || this.getPosition() == this.objectivePos){
+            return null;
+        }
+
+        while (open.size() > 0){
+            Node current = lowestFCost (open);
+            open.remove(current);
+            closed.add(current);
+
+            if ((current.getCoords()[0] == this.objectivePos[0] && current.getCoords()[1] == this.objectivePos[1])){   // The end is reached
+                List<Node> path = finalPath(current);
+                return path;
+            }
+
+            for (Node neighbour:getNeighbours(current)){
+                if (neighbour.getCoords()[0] < 0 || neighbour.getCoords()[0] >= 25 || neighbour.getCoords()[1] < 0 || neighbour.getCoords()[1] >= 45){      // Out of Map
+                    continue;
+                }
+                if ((map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) != 0 && !this.ghost) || closed.contains(neighbour)){
+                    continue;
+                }
+
+                if (shorterPath(neighbour, current) || !open.contains(neighbour)){
+                    neighbour.setAnterior(current);
+                    neighbour.setgCost(calculateGCost(neighbour));
+                    neighbour.calculateHCost(this.objectivePos);
+                    neighbour.calculateFCost();
+
+                    if (!open.contains(neighbour)){
+                        open.add(neighbour);
+                    }
+                }
+            }
+        }
+        return null;    // No path found
+    }
+
+    public List<Node> ai2 (Map map){
         List<Node> open = new ArrayList<>();
         List<Node> closed = new ArrayList<>();
 
@@ -116,7 +198,6 @@ public class Enemy extends Character{
         startNode.calculateHCost(objectivePos);
         startNode.calculateFCost();
         open.add(startNode);        // Beginning gam.sua.Node
-        boolean flag = true;        // Ends loop
 
         int gCostTotal = 0;
 
@@ -124,15 +205,11 @@ public class Enemy extends Character{
             return null;
         }
 
-        while (flag){
-            if (lowestFCost(open) == null){
-                return null;
-            }
-
+        while (open.size() > 0){
             Node current = lowestFCost (open);
-            List<Node> path = finalPath(endNode);
 
-            if ((current.getCoords()[0] == this.objectivePos[0] && current.getCoords()[1] == this.objectivePos[1]) || path.size() >= 5){   // The end is reached
+            if ((current.getCoords()[0] == this.objectivePos[0] && current.getCoords()[1] == this.objectivePos[1])){   // The end is reached
+                List<Node> path = finalPath(endNode);
                 return path;
             }
 
@@ -143,9 +220,11 @@ public class Enemy extends Character{
                 if ((map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) != 0 && !this.ghost) || closed.contains(neighbour)){
                     continue;
                 }
-                neighbour.setgCost(gCostTotal + gCostAnterior(current,neighbour));
-                int tentativeGCost = current.getgCost() + neighbour.gethCost();
-                if (tentativeGCost < neighbour.getgCost()){
+                if (neighbour.getCoords()[0] < 0 || neighbour.getCoords()[0] >= 25 || neighbour.getCoords()[1] < 0 || neighbour.getCoords()[1] >= 45){      // Out of Map
+                    continue;
+                }
+                int tentativeGCost = current.getgCost() + gCostAnterior(current,neighbour);
+                if (tentativeGCost < (gCostTotal + gCostAnterior(current,neighbour)) || !open.contains(neighbour)){
                     neighbour.setAnterior(current);
                     neighbour.setgCost(tentativeGCost);
                     neighbour.calculateHCost(this.objectivePos);
