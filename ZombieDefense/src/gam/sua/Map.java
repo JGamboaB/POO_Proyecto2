@@ -660,6 +660,7 @@ public class Map{
                 matrixId = 10;
 
             matrix[enemy.getPosition()[0]][enemy.getPosition()[1]] = matrixId;
+            checkActiveEnemies();
         }
     }
 
