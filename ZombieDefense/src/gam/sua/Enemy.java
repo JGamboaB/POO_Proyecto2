@@ -1,5 +1,6 @@
 package gam.sua;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Collections;
 
@@ -35,14 +36,14 @@ public class Enemy extends Character{
     }
 
     public void getObjectivePos(Map map){
-        if (map.isNear(this.getPosition(), 2, 2) != null){
+        if (map.isNear(this.getPosition(), 2, 2) != null){              // Jugador Cercano (Ataque, No Moverse)
             this.objectivePos = this.getPosition();
-        } else if (map.isNear(this.getPosition(), 5, 2) != null){
+        } else if (map.isNear(this.getPosition(), 5, 2) != null){       // Jugador Distancia Media (Acercarse)
             this.objectivePos = map.isNear(this.getPosition(), 5, 2);
-        } else if (map.findMatrix(9) != null){
+        } else if (map.findMatrix(9) != null){                              //  Sonido (Acercarse)
             this.objectivePos = map.findMatrix(9);
         } else {
-            this.objectivePos = this.base;
+            this.objectivePos = this.base;                                       //  Ir a Base
         }
     }
 
@@ -101,8 +102,8 @@ public class Enemy extends Character{
     }
 
     public boolean shorterPath(Node neighbour, Node current){
-        Node node = neighbour;
 
+        Node node = neighbour;
         node.setgCost(calculateGCost(node));
         node.calculateHCost(this.objectivePos);
         node.calculateFCost();
@@ -116,6 +117,15 @@ public class Enemy extends Character{
 
         if (nuevo < viejo){
             return true;
+        }
+        return false;
+    }
+
+    public boolean inList (List<Node> list, int[] coords){
+        for (Node node : list){
+            if (Arrays.equals(coords,node.getCoords())){
+                return true;
+            }
         }
         return false;
     }
@@ -148,39 +158,48 @@ public class Enemy extends Character{
         startNode.calculateHCost(objectivePos);
         startNode.calculateFCost();
         open.add(startNode);        // Beginning gam.sua.Node
+        boolean getNear = false;    // Flag to get near
 
-        if (map.isNear(this.getPosition(), 1, 2) != null){       // Is 1 position away
+        if (map.isNear(this.getPosition(), 2, 2) != null || this.getPosition() == this.objectivePos){       // Is 1 position away or is in objective
             return null;
         }
-        if (map.valorPos(this.objectivePos[0], this.objectivePos[1]) != 0 || this.getPosition() == this.objectivePos){
-            return null;
+
+        if (map.isNearCoord(this.getPosition(),5,this.objectivePos) && (map.valorPos(this.objectivePos[0],this.objectivePos[1]) != 0)){   // Has to get near
+            getNear = true;
         }
 
         while (open.size() > 0){
             Node current = lowestFCost (open);
             open.remove(current);
             closed.add(current);
+            //System.out.println(current.getCoords()[0] + " , " + current.getCoords()[1]);
 
+            if (map.isNearCoord(current.getCoords(),2,this.objectivePos) && getNear){    // Gets close, not to the exact objective
+                return finalPath(current);
+            }
             if ((current.getCoords()[0] == this.objectivePos[0] && current.getCoords()[1] == this.objectivePos[1])){   // The end is reached
-                List<Node> path = finalPath(current);
-                return path;
+                return finalPath(current);
             }
 
             for (Node neighbour:getNeighbours(current)){
+
+                if (Arrays.equals(this.objectivePos,neighbour.getCoords())){
+                    neighbour.setAnterior(current);
+                    return finalPath(neighbour);
+                }
                 if (neighbour.getCoords()[0] < 0 || neighbour.getCoords()[0] >= 25 || neighbour.getCoords()[1] < 0 || neighbour.getCoords()[1] >= 45){      // Out of Map
                     continue;
                 }
-                if ((map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) != 0 && !this.ghost) || closed.contains(neighbour)){
+                if ((map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) != 0 && !this.ghost) || (map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) == 6 && this.ghost) || inList(closed, neighbour.getCoords())){
                     continue;
                 }
 
-                if (shorterPath(neighbour, current) || !open.contains(neighbour)){
+                if (shorterPath(neighbour, current) || !inList(open,neighbour.getCoords())){
                     neighbour.setAnterior(current);
                     neighbour.setgCost(calculateGCost(neighbour));
                     neighbour.calculateHCost(this.objectivePos);
                     neighbour.calculateFCost();
-
-                    if (!open.contains(neighbour)){
+                    if (!inList(open,neighbour.getCoords())){
                         open.add(neighbour);
                     }
                 }
@@ -189,7 +208,7 @@ public class Enemy extends Character{
         return null;    // No path found
     }
 
-    public List<Node> ai2 (Map map){
+    /*public List<Node> ai2 (Map map){
         List<Node> open = new ArrayList<>();
         List<Node> closed = new ArrayList<>();
 
@@ -239,5 +258,5 @@ public class Enemy extends Character{
             }
         }
         return null;    // No path found
-    }
+    }*/
 }

@@ -113,19 +113,19 @@ public class Map{
         matrix = new int[][]{
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,8,8,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,0,1,1,1,1,1,1,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,1,1,0,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,0,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,1,1,0,0,1,1,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1},
+                {1,1,1,1,0,0,0,0,0,0,0,0,0,1,0,1,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0},
-                {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+                {0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
                 {1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,1,0,0,0,0,1,0},
                 {1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0},
                 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,0,1,0,0,0,1,0,0},
@@ -367,7 +367,7 @@ public class Map{
             r = (int) y/32 - 1;
 
             //System.out.println("x = " + x + ", y = " + y);
-            //System.out.println("Row: " + r + " Column: " + c);
+            System.out.println("Row: " + r + " Column: " + c);
 
             //ATTACK
             if (action == 1 && doneActs[1] == 0){
@@ -667,22 +667,22 @@ public class Map{
     public void createEnemy(int[] position, int matrixId, int id){
         switch (matrixId) {
             case 3 -> {
-                Skeletons[numEnemies[0]] = new Enemy(position, 10, 2, id, " ", new int[] {12,7});
+                Skeletons[numEnemies[0]] = new Enemy(position, 10, 2, id, "skeleton", new int[] {12,7});
                 activeEnemies.add(Skeletons[numEnemies[0]]);
                 numEnemies[0]++;
             }
             case 4 -> {
-                Slimes[numEnemies[1]] = new Enemy(position, 5, 3, id, " ", new int[] {3,14});
+                Slimes[numEnemies[1]] = new Enemy(position, 5, 3, id, "slime", new int[] {3,14});
                 activeEnemies.add(Slimes[numEnemies[1]]);
                 numEnemies[1]++;
             }
             case 5 -> {
-                Zombies[numEnemies[2]] = new Enemy(position, 15, 2, id, " ", new int[] {11,14});
+                Zombies[numEnemies[2]] = new Enemy(position, 15, 2, id, "zombie", new int[] {11,14});
                 activeEnemies.add(Zombies[numEnemies[2]]);
                 numEnemies[2]++;
             }
             case 6 -> {
-                Ghosts[numEnemies[3]] = new Enemy(position, 20, 4, id, " ", new int[] {5,14});
+                Ghosts[numEnemies[3]] = new Enemy(position, 20, 4, id, "ghost", new int[] {8,14});
                 activeEnemies.add(Ghosts[numEnemies[3]]);
                 numEnemies[3]++;
             }
@@ -727,7 +727,7 @@ public class Map{
     // / / / / / / / / / / TURN
 
     public void changeTurn(){
-        System.out.println("Enemies on matrix: " + enemiesOnMatrix());
+        //System.out.println("Enemies on matrix: " + enemiesOnMatrix());
         playersTurn++;
         if (playersTurn == 3){
             playersTurn = 0;
@@ -742,22 +742,37 @@ public class Map{
     }
 
     public void enemiesTurn(){
-
+        System.out.println("---");
         for (Enemy enemy: activeEnemies){
-
             enemy.getObjectivePos(this);
+            System.out.println(enemy.getoObjectivePos()[0] + " , " + enemy.getoObjectivePos()[1]);
             List<Node> path = enemy.ai(this);
 
             if (path == null)
                 continue;
 
-            //Enemy Movement
+            animMove(enemy, enemy.getId(), path);
+            //wait(2000);
+
+            /*//Enemy Movement
             Node last = path.get(path.size()-1);
             enemy.setPosition(last.getCoords());
             cleanLeftBehind(enemy);
-            updateMatrix(enemy.getPosition()[0],enemy.getPosition()[1],enemy.getId());
+            updateMatrix(enemy.getPosition()[0],enemy.getPosition()[1],enemy.getId());*/
         }
-        updateFrame();
+        //updateFrame();
+    }
+
+    public void animMove(Character character, int matrixId, List<Node> steps){
+        for (Node coordinates : steps) {
+            character.setPosition(new int[]{coordinates.getCoords()[0], coordinates.getCoords()[1]});
+            cleanLeftBehind(character);
+            updateMatrix(coordinates.getCoords()[0], coordinates.getCoords()[1], matrixId);
+            charMatrix();
+            updateFrame();
+            //wait(1000);
+            //System.out.println(coordinates.getCoords()[0] + " , " + coordinates.getCoords()[1]);
+        } updateFrame();
     }
 
 
@@ -783,9 +798,9 @@ public class Map{
     public int[] isNear(int[] pos, int range, int val){     // returns the first value appearance or null if there is none
         for (int r = 0; r < 25; r++) {
             for (int c = 0; c < 45; c++) {
-                if (new int[] {r,c} == pos){
-                    for (int ri = r-range; ri <= r+range; ri++){
-                        for (int ci = c-range; ci <= c+range; ci++){
+                if (r == pos[0] && c == pos[1]){
+                    for (int ri = r-range; ri <= r+range && ri < 25; ri++){
+                        for (int ci = c-range; ci <= c+range && ci < 45; ci++){
                             if (valorPos(ri,ci) == val){
                                 return new int[] {ri,ci};
                             }
@@ -801,10 +816,10 @@ public class Map{
     public boolean isNearCoord(int[] pos, int range, int[] val){    // true if the coords are in range
         for (int r = 0; r < 25; r++) {
             for (int c = 0; c < 45; c++) {
-                if (new int[] {r,c} == pos){
-                    for (int ri = r-range; ri <= r+range; ri++){
-                        for (int ci = c-range; ci <= c+range; ci++){
-                            if (new int[] {ri,ci} == val){
+                if (r == pos[0] && c == pos[1]){
+                    for (int ri = r-range; ri <= r+range && ri < 25; ri++){
+                        for (int ci = c-range; ci <= c+range && ci < 45; ci++){
+                            if (ri == val[0] && ci == val[1]){
                                 return true;
                             }
                         }
@@ -831,6 +846,8 @@ ONLY ONE PERSON CAN EQUIP AN ITEM
 VICTORY/DEFEAT
 ENEMY ABILITIES
 ENEMY ATTACK
+SPAWN 5 SLIMES
+DELETE EXTRAS
 
 
 OPTIONAL:

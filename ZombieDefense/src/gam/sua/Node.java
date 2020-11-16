@@ -107,7 +107,7 @@ public class Node {
                 res += 10;
                 continue;
             }
-            if (c[0] == end[0] && c[1] > end[1]){    // 9
+            if (c[0] < end[0] && c[1] < end[1]){    // 9
                 c = new int[]{c[0]+1, c[1]+1};
                 res += 14;
                 continue;
