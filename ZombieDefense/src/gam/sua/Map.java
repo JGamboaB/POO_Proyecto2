@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -219,6 +220,11 @@ public class Map{
                         } break;
 
                     case 3:
+                        Enemy enemy = getEnemyByPos(r,c);
+                        if (enemy == null){
+                            break;
+                        }
+
                         JLabel skeleton = new JLabel();
                         skeleton.setBounds(c*32,r*32,32,32);
                         skeleton.setIcon(enemyImgs[0]);
@@ -275,6 +281,7 @@ public class Map{
         Menu.removeAll();
 
         charMatrix();
+        //charMatrix2();
         Menu.showMenu(Players[playersTurn],doneActs,round,steps);
 
         frame.add(Menu);
@@ -617,16 +624,6 @@ public class Map{
 
     // / / / / / / / / / / ENEMIES
 
-    public List<Enemy> getEnemies(){
-        List<Enemy> res = new ArrayList<>();
-        for (int r = 0; r < 25; r++){
-            for (int c = 0; c < 45; c++){
-                if (matrix[r][c] > 2 && matrix[r][c] < 7) {
-                    res.add(getEnemyByPos(r, c));
-                }
-            }
-        } return res;
-    }
 
     public int enemiesOnMatrix(){
         int res = 0;
@@ -744,34 +741,22 @@ public class Map{
     }
 
     public void enemiesTurn(){
-        List<Enemy> enemies = getEnemies();
 
-        for (Enemy enemy: enemies){
-
-            if (enemy == null)//
-                continue;//
+        for (Enemy enemy: activeEnemies){
 
             enemy.getObjectivePos(this);
             List<Node> path = enemy.ai(this);
-            if (path == null){
+
+            if (path == null)
                 continue;
-            }
 
-            animMove(enemy, enemy.getId(), path);
-            //wait(2000);
+            //Enemy Movement
+            Node last = path.get(path.size()-1);
+            enemy.setPosition(last.getCoords());
+            cleanLeftBehind(enemy);
+            updateMatrix(enemy.getPosition()[0],enemy.getPosition()[1],enemy.getId());
         }
-    }
-
-    public void animMove(Character character, int matrixId, List<Node> steps){
-        for (Node coordinates : steps) {
-            //System.out.println("a");
-            character.setPosition(new int[]{coordinates.getCoords()[0], coordinates.getCoords()[1]});
-            cleanLeftBehind(character);
-            updateMatrix(coordinates.getCoords()[0], coordinates.getCoords()[1], matrixId);
-            //charMatrix();
-            updateFrame();
-            //wait(1000);
-        } //updateFrame();
+        updateFrame();
     }
 
 

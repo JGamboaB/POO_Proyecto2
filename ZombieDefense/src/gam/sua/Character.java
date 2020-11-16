@@ -1,5 +1,7 @@
 package gam.sua;
 
+import java.util.Arrays;
+
 public class Character {
     private int[] position;
     private int[] oldPos;
@@ -24,7 +26,7 @@ public class Character {
     }
 
     public void setPosition(int[] position) {
-        if (this.position[0] != position[0] && this.position[1] != position[1])
+        if (!Arrays.equals(this.position,position))
             this.oldPos = this.position;
         this.position = position;
     }
