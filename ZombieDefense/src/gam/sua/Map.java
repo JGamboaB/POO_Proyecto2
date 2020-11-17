@@ -16,7 +16,8 @@ public class Map{
     private final Player Gringo = new Player(new int[]{13, 7}, 100, 10, 0, "Gringo");
     private final Player David = new Player(new int[]{18, 7}, 100, 15, 1, "David" );
     private final Player Amalia = new Player(new int[]{18, 9}, 150, 10, 2, "Amalia" );
-    private final Player[] Players = {Gringo,David,Amalia};
+    private final List<Player> Players = new ArrayList<>();
+    private final Player[] totalPlayers = {Gringo,David,Amalia};
 
     //Enemies
     private final Enemy[] Skeletons = new Enemy[10];
@@ -71,6 +72,10 @@ public class Map{
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        Players.add(Gringo);
+        Players.add(David);
+        Players.add(Amalia);
 
         initPanels(Width,Height);
         initMatrix();
@@ -155,11 +160,11 @@ public class Map{
 
                 switch (matrix[r][c]){
                     case 2:
-                        for (int i = 0; i < 3; i++){
+                        for (int i = 0; i < Players.size(); i++){
 
-                            if (Players[i].getPosition()[0] == r && Players[i].getPosition()[1] == c){
-                                playerImgs[i].setBounds(c*32,r*32,32,32);
-                                panel.add(playerImgs[i]);
+                            if (Players.get(i).getPosition()[0] == r && Players.get(i).getPosition()[1] == c){
+                                playerImgs[Players.get(i).getId()].setBounds(c*32,r*32,32,32);
+                                panel.add(playerImgs[Players.get(i).getId()]);
                             }
 
                         } break;
@@ -212,7 +217,7 @@ public class Map{
                     case 2:
                         for (int i = 0; i < 3; i++){
 
-                            if (Players[i].getPosition()[0] == r && Players[i].getPosition()[1] == c){
+                            if (Players.get(i).getPosition()[0] == r && Players.get(i).getPosition()[1] == c){
                                 playerImgs[i].setBounds(c*32,r*32,32,32);
                                 panel.add(playerImgs[i]);
                             }
@@ -282,7 +287,10 @@ public class Map{
 
         charMatrix();
         //charMatrix2();
-        Menu.showMenu(Players[playersTurn],doneActs,round,steps);
+
+        Player player = (Players.size() == 0)? Gringo: Players.get(playersTurn);
+
+        Menu.showMenu(player,doneActs,round,steps);
 
 
         if (!state[0] && !state[1]){ //NORMAL
@@ -323,13 +331,13 @@ public class Map{
                 action = 0;
 
             if (action == 0 && steps > 0)
-                movePlayerWASD(Players[playersTurn],e.getKeyChar());
+                movePlayerWASD(Players.get(playersTurn),e.getKeyChar());
 
 
             //Attack
             if (e.getKeyChar() == ' '){
                 if (doneActs[1] == 0){
-                    showAttackRange(Players[playersTurn]);
+                    showAttackRange(Players.get(playersTurn));
                 }action = 1;
             }
 
@@ -481,7 +489,7 @@ public class Map{
         panel.add(rangeAtt);
 
         charMatrix();
-        Menu.showMenu(Players[playersTurn],doneActs,round,steps);
+        Menu.showMenu(Players.get(playersTurn),doneActs,round,steps);
 
         frame.add(Menu);
         frame.add(panel);
@@ -493,7 +501,7 @@ public class Map{
     }
 
     public void attack(int r, int c){
-        Player player = Players[playersTurn];
+        Player player = Players.get(playersTurn);
         int[] pos = player.getPosition();
         if ((player.getWeaponRange() >= Math.abs(r-pos[0]) && player.getWeaponRange() >= Math.abs(c-pos[1]))){
             if (matrix[r][c] > 2 && matrix[r][c] < 7){
@@ -537,7 +545,7 @@ public class Map{
 
     public void showInv(){
         Menu.removeAll();
-        Menu.showInventory(Players[playersTurn],sharedInventory);
+        Menu.showInventory(Players.get(playersTurn),sharedInventory);
 
         frame.add(Menu);
         frame.add(panel);
@@ -559,7 +567,7 @@ public class Map{
 
     public void equipItem(int num){
         Items item = sharedInventory.get(num);
-        Player player = Players[playersTurn];
+        Player player = Players.get(playersTurn);
 
         if (item instanceof Weapons){
             //sout
@@ -567,8 +575,15 @@ public class Map{
             player.setWeaponRange(((Weapons) item).getRange());
             player.setSound(((Weapons) item).getSound());
         } else {
-            if (item.getId() == 8) //REVIVE
+            if (item.getId() == 8){ //REVIVE
                 player = lowestHealthPlayer(); //Gives the effects to the player on the lowest health or dead
+
+                int[] pos = isNear(new int[]{11,4},1,0);
+                player.setPosition(pos);
+                updateMatrix(pos[0],pos[1],2);
+                Players.add(player);
+                updateFrame();
+            }
 
             player.addHealth(((Consumable) item).getHealth());
             player.setIsPoisoned(((Consumable) item).curesPoison());
@@ -581,7 +596,7 @@ public class Map{
 
     public void resetMenu(){
         Menu.removeAll();
-        Menu.showMenu(Players[playersTurn],doneActs,round,steps);
+        Menu.showMenu(Players.get(playersTurn),doneActs,round,steps);
 
         frame.add(Menu);
         frame.add(panel);
@@ -596,11 +611,11 @@ public class Map{
     // / / / / / / / / / / PLAYERS
 
     public Player lowestHealthPlayer(){
-        Player player = Players[0];
+        Player player = totalPlayers[0];
 
         for (int i = 1; i < 3; i++){
-            if (Players[i].isDead() || Players[i].getHealth() < player.getHealth()){
-                player = Players[i];
+            if (totalPlayers[i].isDead() || totalPlayers[i].getHealth() < player.getHealth()){
+                player = totalPlayers[i];
             }
         }
 
@@ -647,7 +662,7 @@ public class Map{
             int drop = random.nextInt(11);
             int matrixId = (drop < 2)? 10:0;
 
-            if (Players[playersTurn].getLuck()) //If LUCK, always drop loot
+            if (Players.get(playersTurn).getLuck()) //If LUCK, always drop loot
                 matrixId = 10;
 
             matrix[enemy.getPosition()[0]][enemy.getPosition()[1]] = matrixId;
@@ -722,13 +737,9 @@ public class Map{
 
         playersTurn++;
 
-        //if (Players[playersTurn-1].isDead()){
-        //    System.out.println(Players[playersTurn].getName());
-        //    playersTurn++;
-        //}
-
-        if (playersTurn >= 3){
+        if (playersTurn >= Players.size()){
             playersTurn = 0;
+
             if (enemiesOnMatrix() == 0){
                 round++;
                 spawners();
@@ -750,7 +761,7 @@ public class Map{
                 updateFrame();
             }
 
-        } steps = Players[playersTurn].getSteps();
+        } steps = (Players.size() == 0)? 0:Players.get(playersTurn).getSteps();
     }
 
     public void enemiesTurn(){
@@ -800,6 +811,7 @@ public class Map{
             objective.setHealth(0);
             int[] pos = objective.getPosition();
             matrix[pos[0]][pos[1]] = 0;
+            Players.remove(Players.indexOf(objective));
         }
     }
 

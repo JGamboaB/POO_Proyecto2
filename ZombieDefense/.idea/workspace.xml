@@ -50,6 +50,19 @@
     <property name="restartRequiresConfirmation" value="false" />
   </component>
   <component name="RunManager" selected="Application.Map">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Main" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="gam.sua.Main" />
       <module name="ZombieDefense" />
@@ -63,19 +76,6 @@
     <configuration name="Map" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="gam.sua.Map" />
       <module name="ZombieDefense" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -151,25 +151,25 @@
     </state>
     <state x="574" y="127" key="FileChooserDialogImpl/0.0.1536.864@0.0.1536.864" timestamp="1605482384667" />
     <state x="1220" y="298" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1605495821060" />
-    <state width="1491" height="301" key="GridCell.Tab.0.bottom" timestamp="1605587416810">
+    <state width="1491" height="301" key="GridCell.Tab.0.bottom" timestamp="1605591256998">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1491" height="301" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1605587416810" />
+    <state width="1491" height="301" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1605591256998" />
     <state width="1877" height="291" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1605566466147" />
-    <state width="1491" height="301" key="GridCell.Tab.0.center" timestamp="1605587416809">
+    <state width="1491" height="301" key="GridCell.Tab.0.center" timestamp="1605591256998">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1491" height="301" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1605587416809" />
+    <state width="1491" height="301" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1605591256998" />
     <state width="1877" height="291" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1605566466147" />
-    <state width="1491" height="301" key="GridCell.Tab.0.left" timestamp="1605587416809">
+    <state width="1491" height="301" key="GridCell.Tab.0.left" timestamp="1605591256998">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1491" height="301" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1605587416809" />
+    <state width="1491" height="301" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1605591256998" />
     <state width="1877" height="291" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1605566466147" />
-    <state width="1491" height="301" key="GridCell.Tab.0.right" timestamp="1605587416809">
+    <state width="1491" height="301" key="GridCell.Tab.0.right" timestamp="1605591256998">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state width="1491" height="301" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1605587416809" />
+    <state width="1491" height="301" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1605591256998" />
     <state width="1877" height="291" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1605566466147" />
     <state width="1877" height="363" key="GridCell.Tab.1.bottom" timestamp="1605506132176">
       <screen x="0" y="0" width="1920" height="1080" />
