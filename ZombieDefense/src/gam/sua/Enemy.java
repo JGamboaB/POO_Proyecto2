@@ -54,7 +54,7 @@ public class Enemy extends Character{
     public void setRevive(boolean revive) { this.revive = revive; }
 
     public void getObjectivePos(Map map){
-        if (map.isNear(this.getPosition(), 2, 2) != null){              // Jugador Cercano (Ataque, No Moverse)
+        if (map.isNear(this.getPosition(), 1, 2) != null){              // Jugador Cercano (Ataque, No Moverse)
             this.objectivePos = this.getPosition();
         } else if (map.isNear(this.getPosition(), 5, 2) != null){       // Jugador Distancia Media (Acercarse)
             this.objectivePos = map.isNear(this.getPosition(), 5, 2);
@@ -178,7 +178,7 @@ public class Enemy extends Character{
         open.add(startNode);        // Beginning gam.sua.Node
         boolean getNear = false;    // Flag to get near
 
-        if (map.isNear(this.getPosition(), 2, 2) != null || this.getPosition() == this.objectivePos){       // Is 1 position away or is in objective
+        if (map.isNear(this.getPosition(), 1, 2) != null || this.getPosition() == this.objectivePos){       // Is 1 position away or is in objective
             return null;    // Dont Move
         }
 
@@ -192,7 +192,7 @@ public class Enemy extends Character{
             closed.add(current);
             //System.out.println(current.getCoords()[0] + " , " + current.getCoords()[1]);
 
-            if (map.isNearCoord(current.getCoords(),2,this.objectivePos) && getNear){    // Gets close, not to the exact objective
+            if (map.isNearCoord(current.getCoords(),1,this.objectivePos) && getNear){    // Gets close, not to the exact objective
                 return finalPath(current);
             }
             if ((current.getCoords()[0] == this.objectivePos[0] && current.getCoords()[1] == this.objectivePos[1])){   // The end is reached
