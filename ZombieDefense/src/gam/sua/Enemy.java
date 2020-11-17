@@ -25,18 +25,18 @@ public class Enemy extends Character{
         switch (name){
             case "ghost":
                 ghost = true;
-                damage = 10;
+                damage = 75; //10
                 break;
             case "skeleton":
-                damage = 15;
+                damage = 25; //15
                 break;
             case "zombie":
                 poison = true;
-                damage = 10;
+                damage = 50; //10
                 break;
             case "slime":
                 revive = true;
-                damage = 5;
+                damage = 15; //5
                 break;
         }
     }

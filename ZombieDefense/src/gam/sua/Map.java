@@ -13,15 +13,15 @@ import java.util.Random;
 public class Map{
 
     //Players
-    private final Player Gringo = new Player(new int[]{13, 7}, 100, 10, 0, "Gringo");
-    private final Player David = new Player(new int[]{18, 7}, 100, 15, 1, "David" );
-    private final Player Amalia = new Player(new int[]{18, 9}, 150, 10, 2, "Amalia" );
+    private final Player Gringo = new Player(new int[]{13, 7}, 100, 7, 0, "Gringo");
+    private final Player David = new Player(new int[]{18, 7}, 100, 12, 1, "David" );
+    private final Player Amalia = new Player(new int[]{18, 9}, 150, 7, 2, "Amalia" );
     private final List<Player> Players = new ArrayList<>();
     private final Player[] totalPlayers = {Gringo,David,Amalia};
 
     //Enemies
     private final Enemy[] Skeletons = new Enemy[10]; //Normal
-    private final Enemy[] Slimes = new Enemy[10];    //Weak
+    private final Enemy[] Slimes = new Enemy[10];    //Weak/Revive (Always 2 hits to kill)
     private final Enemy[] Zombies = new Enemy[6];    //Poison
     private final Enemy[] Ghosts = new Enemy[4];     //Can walk through
     private final List<Enemy> activeEnemies = new ArrayList<>();
@@ -440,7 +440,8 @@ public class Map{
 
         //Chest
         if (matrix[r+rAdd][c+cAdd] == 8){
-            addToSharedInv(InvObject.getItemById(8)); //REVIVE
+            int pos = random.nextInt(inv.size());
+            addToSharedInv(inv.get(pos));
             matrix[r+rAdd][c+cAdd] = 1;
             return;
         }
@@ -566,6 +567,19 @@ public class Map{
 
         if (item.getId() < 7) //Only removes the Weapons from the possible items
             inv.remove(item);
+
+        if (item.getId() == 9){ //Validation for maximum 2 revives
+            if (listAmount(item) == 2)
+                inv.remove(item);
+        }
+    }
+
+    public int listAmount(Items item){
+        int res = 0;
+        for (Items items : sharedInventory){
+            if (items.getId() == item.getId())
+                res++;
+        } return res;
     }
 
     public void equipItem(int num){
@@ -682,22 +696,22 @@ public class Map{
     public void createEnemy(int[] position, int matrixId, int id){
         switch (matrixId) {
             case 3 -> {
-                Skeletons[numEnemies[0]] = new Enemy(position, 10, 2, id, "skeleton", new int[] {12,7});
+                Skeletons[numEnemies[0]] = new Enemy(position, 15, 2, id, "skeleton", new int[] {12,7}); //h:10
                 activeEnemies.add(Skeletons[numEnemies[0]]);
                 numEnemies[0]++;
             }
             case 4 -> {
-                Slimes[numEnemies[1]] = new Enemy(position, 5, 3, id, "slime", new int[] {3,14});
+                Slimes[numEnemies[1]] = new Enemy(position, 10, 3, id, "slime", new int[] {3,14}); //h:5
                 activeEnemies.add(Slimes[numEnemies[1]]);
                 numEnemies[1]++;
             }
             case 5 -> {
-                Zombies[numEnemies[2]] = new Enemy(position, 15, 2, id, "zombie", new int[] {11,14});
+                Zombies[numEnemies[2]] = new Enemy(position, 20, 2, id, "zombie", new int[] {11,14}); //h:15
                 activeEnemies.add(Zombies[numEnemies[2]]);
                 numEnemies[2]++;
             }
             case 6 -> {
-                Ghosts[numEnemies[3]] = new Enemy(position, 20, 4, id, "ghost", new int[] {8,14});
+                Ghosts[numEnemies[3]] = new Enemy(position, 25, 4, id, "ghost", new int[] {8,14}); //h:20
                 activeEnemies.add(Ghosts[numEnemies[3]]);
                 numEnemies[3]++;
             }
@@ -905,7 +919,6 @@ public class Map{
 
 /*
 MUST:
-BALANCE ENEMY DAMAGE & ABILITIES    GD
 ONLY ONE PERSON CAN EQUIP AN ITEM   G
 DELETE EXTRAS                       D
 COMMENTS                            GD
@@ -919,5 +932,6 @@ OPTIONAL:
 5. BOSS
 6. MENU IMAGES WEAPONS
 *SLIME REVIVE?????
+*BALANCE ENEMY DAMAGE & ABILITIES
 
  */
