@@ -2,10 +2,7 @@ package gam.sua;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,9 +20,9 @@ public class Map{
 
     //Enemies
     private final Enemy[] Skeletons = new Enemy[10];
-    private final Enemy[] Slimes = new Enemy[8];
+    private final Enemy[] Slimes = new Enemy[10];
     private final Enemy[] Zombies = new Enemy[6];
-    private final Enemy[] Ghosts = new Enemy[6];
+    private final Enemy[] Ghosts = new Enemy[4];
     private final List<Enemy> activeEnemies = new ArrayList<>();
     //private final Enemy[] ActiveEnemies = new Enemy[30];
 
@@ -54,6 +51,9 @@ public class Map{
 
     //Images
     private final JLabel bg = new JLabel(new ImageIcon("images\\MapV2.png"));
+    private final JLabel victoryScreen = new JLabel(new ImageIcon("images\\victory.png"));
+    private final JLabel defeatScreen = new JLabel(new ImageIcon("images\\defeat.png"));
+    private final boolean[] state = new boolean[]{false,false};
     private final JLabel[] playerImgs = new JLabel[3];
     private final ImageIcon[] enemyImgs = new ImageIcon[4];
 
@@ -284,9 +284,16 @@ public class Map{
         //charMatrix2();
         Menu.showMenu(Players[playersTurn],doneActs,round,steps);
 
-        frame.add(Menu);
-        frame.add(panel);
-        frame.add(bg);
+
+        if (!state[0] && !state[1]){ //NORMAL
+            frame.add(Menu);
+            frame.add(panel);
+            frame.add(bg);
+        } if (state[0])
+            frame.add(victoryScreen); //VICTORY
+        if (state[1])
+            frame.add(defeatScreen); //DEFEAT
+
 
         frame.revalidate();
         frame.repaint();
@@ -451,22 +458,6 @@ public class Map{
 
     }
 
-    public void movePlayer2(int r, int c, Character character){
-        int[] posPlayer = character.getPosition();
-        if (character.getSteps() < Math.abs(r-posPlayer[0]) || character.getSteps() < Math.abs(c-posPlayer[1])) {
-            //System.out.println("Above range");
-            doneActs[0] = 0;
-            return;
-        } if (matrix[r][c] != 0){
-            //System.out.println("Can't Walk Over There");
-            doneActs[0] = 0;
-            return;
-        }
-        character.setPosition(new int[]{r,c});
-        cleanLeftBehind(character);
-        updateMatrix(r,c,2);
-    }
-
     public static void wait(int ms){
         try {
             Thread.sleep(ms);
@@ -501,35 +492,6 @@ public class Map{
 
     }
 
-    void showAttackRange2(Player player){ //Print Area that the Player can Attack.
-        int range = player.getWeaponRange();
-        int r = player.getPosition()[0], c = player.getPosition()[1];
-        int x, y;
-
-
-        for (int r2 = r-range; r2<=(r+range); r2++){
-            for (int c2 = c-range; c2<=(c+range);c2++){
-                if (matrix[r2][c2] > 2 && matrix[r2][c2] < 8){
-                    x = (c2*32); y = (r2*32);
-                    JLabel rangeAtt = new JLabel(new ImageIcon(attackArea.getImage()));
-                    rangeAtt.setBounds(x,y,32,32);
-                    panel.add(rangeAtt);
-                }
-            }
-        }
-
-        charMatrix();
-        Menu.showMenu(Players[playersTurn],doneActs,round,steps);
-
-        frame.add(Menu);
-        frame.add(panel);
-        frame.add(bg);
-
-        frame.revalidate();
-        frame.repaint();
-
-    }
-
     public void attack(int r, int c){
         Player player = Players[playersTurn];
         int[] pos = player.getPosition();
@@ -538,12 +500,35 @@ public class Map{
                 Enemy enemy = getEnemyByPos(r,c);
                 enemy.subtractHealth(player.getDMG());
                 enemyDeath(enemy);
+
+                //Sound
+                if (player.getSound()){
+                    int[] soundCoords = isNear(player.getPosition(),1,0);
+
+                    if (soundCoords == null)
+                        soundCoords = isNear(player.getPosition(),2,0);
+
+                    if (soundCoords == null)
+                        return;
+
+                    matrix[soundCoords[0]][soundCoords[1]] = 9;
+                }
+
             } else if (matrix[r][c] == 8){ //Open Chest
                 addToSharedInv(InvObject.getItemById(8));
                 matrix[r][c] = 1;
             }
         } else {
             doneActs[1] = 0;
+        }
+    }
+
+    public void cleanSound(){
+        for (int r = 0; r < 25; r++){
+            for (int c = 0; c < 45; c++){
+                if (matrix[r][c] == 9)
+                    matrix[r][c] = 0;
+            }
         }
     }
 
@@ -580,6 +565,7 @@ public class Map{
             //sout
             player.setDMG(((Weapons) item).getDamage());
             player.setWeaponRange(((Weapons) item).getRange());
+            player.setSound(((Weapons) item).getSound());
         } else {
             if (item.getId() == 8) //REVIVE
                 player = lowestHealthPlayer(); //Gives the effects to the player on the lowest health or dead
@@ -623,7 +609,6 @@ public class Map{
 
 
     // / / / / / / / / / / ENEMIES
-
 
     public int enemiesOnMatrix(){
         int res = 0;
@@ -698,10 +683,10 @@ public class Map{
     public void spawners(){ //Validate that there is no player in the spawn points
         switch (round){
             case 5:
-                createEnemy(new int[]{1,23},6,6);
-                updateMatrix(1,23,6);
-                createEnemy(new int[]{1,25},6,6);
-                updateMatrix(1,25,6);
+                createEnemy(new int[]{1,23},4,4);
+                updateMatrix(1,23,4);
+                createEnemy(new int[]{1,25},4,4);
+                updateMatrix(1,25,4);
 
             case 4: //Ghosts
                 createEnemy(new int[]{13,34},6,6);
@@ -734,6 +719,7 @@ public class Map{
 
     public void changeTurn(){
         //System.out.println("Enemies on matrix: " + enemiesOnMatrix());
+
         playersTurn++;
 
         if (playersTurn == 3){
@@ -748,8 +734,16 @@ public class Map{
 
             } else {
                 enemiesTurn();
+                defeat();
             }
-            //turn = false;
+            cleanSound();
+
+            //VICTORY
+            if (round == 6){ //6
+                state[0] = true;
+                updateFrame();
+            }
+
         } steps = Players[playersTurn].getSteps();
     }
 
@@ -762,6 +756,7 @@ public class Map{
 
             if (isNear(enemy.getPosition(),2,2) != null){
                 enemyAttack (enemy, isNear(enemy.getPosition(),2,2));
+                defeat(); //
                 //wait(1000);
             }
 
@@ -769,14 +764,6 @@ public class Map{
                 continue;
 
             animMove(enemy, enemy.getId(), path);
-
-            //wait(2000);
-
-            /*//Enemy Movement
-            Node last = path.get(path.size()-1);
-            enemy.setPosition(last.getCoords());
-            cleanLeftBehind(enemy);
-            updateMatrix(enemy.getPosition()[0],enemy.getPosition()[1],enemy.getId());*/
         }
         //updateFrame();
     }
@@ -786,10 +773,6 @@ public class Map{
             character.setPosition(new int[]{coordinates.getCoords()[0], coordinates.getCoords()[1]});
             cleanLeftBehind(character);
             updateMatrix(coordinates.getCoords()[0], coordinates.getCoords()[1], matrixId);
-            charMatrix();
-            updateFrame();
-            //wait(1000);
-            //System.out.println(coordinates.getCoords()[0] + " , " + coordinates.getCoords()[1]);
         } updateFrame();
     }
 
@@ -811,9 +794,23 @@ public class Map{
 
     // / / / / / / / / / / END GAME
 
-    public void defeat(){}
+    public void defeat(){
+        if (Gringo.isDead() && David.isDead() && Amalia.isDead()){
+            state[1] = true;
+            return;
+        }
 
-    public void victory(){}
+        int[] r = {3,11,12,10,4,2,12,12,12,12}, c = {14,14,14,14,14,14,8,7,6,10};
+
+        for (int i = 0; i < 10; i++){
+            if (matrix[r[i]][c[i]] > 2 && matrix[r[i]][c[i]] < 7){
+                state[1] = true;
+                updateFrame();
+                break;
+            }
+        }
+    }
+
 
     // / / / / / / / / / / AI
 
@@ -874,15 +871,12 @@ public class Map{
 
 /*
 MUST:
-SOUND                               G
-ONLY ONE PERSON CAN EQUIP AN ITEM   G
-VICTORY/DEFEAT                      G
-ENEMY ABILITIES                     -
-ENEMY ATTACK                        -
-SPAWN 5 SLIMES                      G
-DELETE EXTRAS                       D
-BALANCE ENEMY DAMAGE & ABILITIES    GD
 PLAYER DEATH                        ???
+VIBE CHECK (ABILITIES)
+BALANCE ENEMY DAMAGE & ABILITIES    GD
+POISON MENU                         G
+ONLY ONE PERSON CAN EQUIP AN ITEM   G
+DELETE EXTRAS                       D
 
 
 OPTIONAL:
@@ -890,5 +884,5 @@ MOVEMENT ANIMATIONS
 MUSIC
 BOSS
 MENU IMAGES WEAPONS
-ADDITIONAL EFFECTS
+ADDITIONAL EFFECTS (ATTACK, SOUND)
  */

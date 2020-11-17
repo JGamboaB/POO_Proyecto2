@@ -14,7 +14,7 @@ public class Weapons extends Items{
 
     public int getDamage() {return damage;}
 
-    public boolean isSound() {return sound;}
+    public boolean getSound() {return sound;}
 
     public int getRange() {return range;}
 }

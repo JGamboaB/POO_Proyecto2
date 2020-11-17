@@ -15,11 +15,13 @@ public class Player extends Character{
     //changes depending on the weapon equipped
     private int DMG;
     private int weaponRange;
+    private boolean sound;
 
     Player(int[] _position, int _health, int _range, int _id, String _name){
         super(_position,_health,_range,_id);
         name = _name;
         isPoisoned = 0;
+        sound = false;
 
         // Abilities
         switch (name){
@@ -78,4 +80,8 @@ public class Player extends Character{
     public boolean getDoubleDamage(){return doubleDamage;}
 
     public void newIsPoisoned(int _isPoisoned) {this.isPoisoned = _isPoisoned;}
+
+    public void setSound(boolean sound){this.sound = sound;}
+
+    public boolean getSound(){return sound;}
 }
