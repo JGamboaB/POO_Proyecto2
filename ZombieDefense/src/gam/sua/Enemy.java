@@ -1,4 +1,5 @@
 package gam.sua;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -148,6 +149,27 @@ public class Enemy extends Character{
         return false;
     }
 
+    public boolean canWalk (Map map, Node node){
+        if (this.ghost){
+            if (map.valorPos(node.getCoords()[0],node.getCoords()[1]) == 6){
+                return false;
+            }
+        } else {
+            if (map.valorPos(node.getCoords()[0],node.getCoords()[1]) != 0 && map.valorPos(node.getCoords()[0],node.getCoords()[1]) != 9 && map.valorPos(node.getCoords()[0],node.getCoords()[1]) != 10){
+                if (map.valorPos(node.getCoords()[0],node.getCoords()[1]) == 2){
+                    if (map.isNearCoord(node.getCoords(),1,this.getPosition())){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public List<Node> finalPath(Node end){
         List<Node> path = new ArrayList<>();
         List<Node> res = new ArrayList<>();
@@ -208,7 +230,8 @@ public class Enemy extends Character{
                 if (neighbour.getCoords()[0] < 0 || neighbour.getCoords()[0] >= 25 || neighbour.getCoords()[1] < 0 || neighbour.getCoords()[1] >= 45){
                     continue;   // Out of Map
                 }
-                if ((map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) != 0 && map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) != 10 && !this.ghost) || (map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) == 6 && this.ghost) || inList(closed, neighbour.getCoords())){
+
+                if (!canWalk (map,neighbour) || inList(closed, neighbour.getCoords())){
                     continue;   // Cant move there
                 }
 
