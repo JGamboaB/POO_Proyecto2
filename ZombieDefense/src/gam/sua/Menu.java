@@ -37,6 +37,7 @@ public class Menu extends JPanel{
 
     public void showMenu(Player player, int[] done, int round, int steps){//An int array parameter [0,0,0] should modify "used"
         String[] used = {"","",""};
+        String poison = (player.getIsPoisoned() > 0)?"<br>*Is Poisoned ("+player.getIsPoisoned()+")":"<br>";
 
         for (int i = 0; i < 3; i++){
             if (done[i] == 1)
@@ -44,7 +45,7 @@ public class Menu extends JPanel{
         }
 
         tNormal.setText("<html>Round - "+ round +"<br><br>"+ player.getName() +"<br>*Health: "+ player.getHealth() +
-                "<br>*Steps Left: "+steps+"<br>*DMG: "+ player.getDMG() +" Range: "+ player.getWeaponRange() +"<br><br>+"+
+                "<br>*Steps Left: "+steps+"<br>*DMG: "+ player.getDMG() +" Range: "+ player.getWeaponRange() +poison+"<br><br>+"+
                 player.getSpecialAb()[0] +"<br>+"+ player.getSpecialAb()[1] +"<br>+"+ player.getSpecialAb()[2] +
                 "<br><br>[M] Move      "+ used[0] +"<br>[SPACE] Attack      "+ used[1] +"<br>[I] Inventory      "+
                 used[2] +"<br>[N] Next Turn</html>");
@@ -53,7 +54,7 @@ public class Menu extends JPanel{
 
         playerLabel.setIcon(new ImageIcon("images\\CharIMG\\"+player.getId()+".png"));
 
-        tNormal.setBounds(0,-30,230,300);
+        tNormal.setBounds(0,-30,230,320);
         tNotes.setBounds(0,20*13,230,50);
         playerLabel.setBounds(170,10,32,32);
 

@@ -43,7 +43,6 @@ public class Map{
     private int[] doneActs = new int[]{0,0,0};
     private final int[] numEnemies = new int[]{0,0,0,0}; //Skeleton, Slime, Zombie, Ghost
     private int playersTurn = 0; //0,1,2
-    private boolean turn = true;
     private int round = 0;
     private int steps = Gringo.getSteps();
 
@@ -58,7 +57,6 @@ public class Map{
     private final JLabel[] playerImgs = new JLabel[3];
     private final ImageIcon[] enemyImgs = new ImageIcon[4];
 
-    private final ImageIcon rangeArea = new ImageIcon("images\\move.png");
     private final ImageIcon attackArea = new ImageIcon("images\\attack.png");
     private final ImageIcon shine = new ImageIcon("images\\shine.png");
 
@@ -160,11 +158,11 @@ public class Map{
 
                 switch (matrix[r][c]){
                     case 2:
-                        for (int i = 0; i < Players.size(); i++){
+                        for (Player player : Players) {
 
-                            if (Players.get(i).getPosition()[0] == r && Players.get(i).getPosition()[1] == c){
-                                playerImgs[Players.get(i).getId()].setBounds(c*32,r*32,32,32);
-                                panel.add(playerImgs[Players.get(i).getId()]);
+                            if (player.getPosition()[0] == r && player.getPosition()[1] == c) {
+                                playerImgs[player.getId()].setBounds(c * 32, r * 32, 32, 32);
+                                panel.add(playerImgs[player.getId()]);
                             }
 
                         } break;
@@ -895,8 +893,6 @@ public class Map{
 
 /*
 MUST:
-PLAYER DEATH                        G
-POISON MENU                         G
 VIBE CHECK (ABILITIES)
 BALANCE ENEMY DAMAGE & ABILITIES    GD
 ONLY ONE PERSON CAN EQUIP AN ITEM   G
