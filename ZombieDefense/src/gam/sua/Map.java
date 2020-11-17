@@ -722,19 +722,25 @@ public class Map{
 
         playersTurn++;
 
-        if (playersTurn == 3){
+        //if (Players[playersTurn-1].isDead()){
+        //    System.out.println(Players[playersTurn].getName());
+        //    playersTurn++;
+        //}
+
+        if (playersTurn >= 3){
             playersTurn = 0;
             if (enemiesOnMatrix() == 0){
                 round++;
                 spawners();
 
+            } else {
+                enemiesTurn();
+
                 for (Player player : Players){      // Poison Damage if player is poisoned
                     player.poisonDamage();
                 }
 
-            } else {
-                enemiesTurn();
-                defeat();
+                defeat(); //Check if defeat
             }
             cleanSound();
 
@@ -788,7 +794,13 @@ public class Map{
             objective.newIsPoisoned(3);
         }
 
-        objective.setHealth(objective.getHealth()-enemy.getDamage());   // Attack
+        objective.subtractHealth(enemy.getDamage());   // Attack
+
+        if (objective.isDead()){
+            objective.setHealth(0);
+            int[] pos = objective.getPosition();
+            matrix[pos[0]][pos[1]] = 0;
+        }
     }
 
 
@@ -871,10 +883,10 @@ public class Map{
 
 /*
 MUST:
-PLAYER DEATH                        ???
+PLAYER DEATH                        G
+POISON MENU                         G
 VIBE CHECK (ABILITIES)
 BALANCE ENEMY DAMAGE & ABILITIES    GD
-POISON MENU                         G
 ONLY ONE PERSON CAN EQUIP AN ITEM   G
 DELETE EXTRAS                       D
 
