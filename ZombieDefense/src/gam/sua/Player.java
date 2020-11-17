@@ -43,6 +43,7 @@ public class Player extends Character{
                 specialAb = new String[]{"Extra Health","Can Evade","Initial Bow"};
                 DMG = 5;
                 weaponRange = 4;
+                sound = true;
                 break;
         }
     }
@@ -84,4 +85,6 @@ public class Player extends Character{
     public void setSound(boolean sound){this.sound = sound;}
 
     public boolean getSound(){return sound;}
+
+    public boolean getLessSound(){return lessSound;}
 }

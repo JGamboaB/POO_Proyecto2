@@ -20,10 +20,10 @@ public class Map{
     private final Player[] totalPlayers = {Gringo,David,Amalia};
 
     //Enemies
-    private final Enemy[] Skeletons = new Enemy[10];
-    private final Enemy[] Slimes = new Enemy[10];
-    private final Enemy[] Zombies = new Enemy[6];
-    private final Enemy[] Ghosts = new Enemy[4];
+    private final Enemy[] Skeletons = new Enemy[10]; //Normal
+    private final Enemy[] Slimes = new Enemy[10];    //Weak
+    private final Enemy[] Zombies = new Enemy[6];    //Poison
+    private final Enemy[] Ghosts = new Enemy[4];     //Can walk through
     private final List<Enemy> activeEnemies = new ArrayList<>();
     //private final Enemy[] ActiveEnemies = new Enemy[30];
 
@@ -45,6 +45,7 @@ public class Map{
     private int playersTurn = 0; //0,1,2
     private int round = 0;
     private int steps = Gringo.getSteps();
+    private int valueBefore = 0;
 
     private final Random random = new Random();
     //Move all the creatures simultaneously?
@@ -112,7 +113,7 @@ public class Map{
 
     // / / / / / / / / / / MATRIX
 
-    public void initMatrix(){ //0 can move, 1 occupied, 2 player, 3 skeleton, 4 slime, 5 zombie, 6 ghost, 7 boss, 8 chest, 9 sound, 10 item
+    public void initMatrix(){ //0 can move, 1 occupied, 2 player, 3 skeleton, 4 slime, 5 zombie, 6 ghost, 7 boss, 8 chest, 9 sound, 10 item, 11 walking space only for players
         matrix = new int[][]{
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,8,8,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
@@ -120,13 +121,13 @@ public class Map{
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,0,1,1,1,1,1,1,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,0,0,0,1,1,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,11,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,11,1,1,1,1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,0,1,1,0,1,1,1,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,1,1,0,0,1,1,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
-                {1,1,1,1,0,0,0,0,0,0,0,0,0,1,0,1,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1},
+                {1,1,1,1,0,0,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1},
+                {1,1,1,1,0,0,0,0,0,0,0,0,0,11,0,1,1,1,1,1,1,0,0,1,1,1,0,1,1,1,1,0,0,0,0,1,0,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0},
                 {0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
                 {1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,1,0,0,0,0,1,0},
@@ -149,7 +150,7 @@ public class Map{
     //Called when a character moves
     void cleanLeftBehind(Character Char){
         int r = Char.getOldPos()[0], c = Char.getOldPos()[1];
-        matrix[r][c] = 0;
+        matrix[r][c] = valueBefore;
     }
 
     void charMatrix(){
@@ -380,7 +381,7 @@ public class Map{
             r = (int) y/32 - 1;
 
             //System.out.println("x = " + x + ", y = " + y);
-            //System.out.println("Row: " + r + " Column: " + c);
+            //System.out.println("Row: " + r + " Column: " + c + " Value: "+ matrix[r][c]);
 
             //ATTACK
             if (action == 1 && doneActs[1] == 0){
@@ -431,6 +432,8 @@ public class Map{
                 return;
         }
 
+        valueBefore = matrix[r+rAdd][c+cAdd];
+
         //Map boundaries
         if (!(r+rAdd >= 0 && r+rAdd <= 25 && c+cAdd >= 0 && c+cAdd <= 45))
             return;
@@ -443,13 +446,14 @@ public class Map{
         }
 
         //Non walking Spaces
-        if (matrix[r+rAdd][c+cAdd] != 0 && matrix[r+rAdd][c+cAdd] != 9 && matrix[r+rAdd][c+cAdd] != 10)
+        if (matrix[r+rAdd][c+cAdd] != 0 && matrix[r+rAdd][c+cAdd] != 9 && matrix[r+rAdd][c+cAdd] != 10 && matrix[r+rAdd][c+cAdd] != 11)
             return;
 
         //Item On The Floor
         if (matrix[r+rAdd][c+cAdd] == 10){
             int pos = random.nextInt(inv.size());
             addToSharedInv(inv.get(pos));
+            valueBefore = 0;
         }
 
         player.setPosition(new int[]{r+rAdd,c+cAdd});
@@ -501,25 +505,26 @@ public class Map{
     public void attack(int r, int c){
         Player player = Players.get(playersTurn);
         int[] pos = player.getPosition();
+
+        //Sound
+        if (player.getSound()){
+            int[] soundCoords = isNear(player.getPosition(),1,0);
+
+            if (soundCoords == null)
+                soundCoords = isNear(player.getPosition(),2,0);
+
+            if (soundCoords == null)
+                return;
+
+            matrix[soundCoords[0]][soundCoords[1]] = 9;
+        }
+
+
         if ((player.getWeaponRange() >= Math.abs(r-pos[0]) && player.getWeaponRange() >= Math.abs(c-pos[1]))){
             if (matrix[r][c] > 2 && matrix[r][c] < 7){
                 Enemy enemy = getEnemyByPos(r,c);
                 enemy.subtractHealth(player.getDMG());
                 enemyDeath(enemy);
-
-                //Sound
-                if (player.getSound()){
-                    int[] soundCoords = isNear(player.getPosition(),1,0);
-
-                    if (soundCoords == null)
-                        soundCoords = isNear(player.getPosition(),2,0);
-
-                    if (soundCoords == null)
-                        return;
-
-                    matrix[soundCoords[0]][soundCoords[1]] = 9;
-                }
-
             } else if (matrix[r][c] == 8){ //Open Chest
                 addToSharedInv(InvObject.getItemById(8));
                 matrix[r][c] = 1;
@@ -568,10 +573,14 @@ public class Map{
         Player player = Players.get(playersTurn);
 
         if (item instanceof Weapons){
-            //sout
+
             player.setDMG(((Weapons) item).getDamage());
             player.setWeaponRange(((Weapons) item).getRange());
             player.setSound(((Weapons) item).getSound());
+
+            if (player.getLessSound())
+                player.setSound(false);
+
         } else {
             if (item.getId() == 8){ //REVIVE
                 player = lowestHealthPlayer(); //Gives the effects to the player on the lowest health or dead
@@ -651,9 +660,11 @@ public class Map{
 
     public void enemyDeath(Enemy enemy){
         if (enemy.isDead()){
+
             if (enemy.getRevive()){     // Revive
                 enemy.setRevive(false);
                 enemy.setHealth(5);
+                //System.out.println("REVIVE!");
                 return;
             }
 
@@ -822,9 +833,10 @@ public class Map{
             return;
         }
 
-        int[] r = {3,11,12,10,4,2,12,12,12,12}, c = {14,14,14,14,14,14,8,7,6,10};
+        //int[] r = {3,11,12,10,4,2,12,12,12,12}, c = {14,14,14,14,14,14,8,7,6,10};
+        int[] r = {11,11,12,12,12,12,12,12,12,11,12,12,11,12,10,9,8,5,4,3,2,1}, c = {4,5,4,5,6,7,8,9,10,10,11,12,14,14,14,14,14,14,14,14,14,14};
 
-        for (int i = 0; i < 10; i++){
+        for (int i = 0; i < 22; i++){
             if (matrix[r[i]][c[i]] > 2 && matrix[r[i]][c[i]] < 7){
                 state[1] = true;
                 updateFrame();
@@ -893,16 +905,19 @@ public class Map{
 
 /*
 MUST:
-VIBE CHECK (ABILITIES)
 BALANCE ENEMY DAMAGE & ABILITIES    GD
 ONLY ONE PERSON CAN EQUIP AN ITEM   G
 DELETE EXTRAS                       D
+COMMENTS                            GD
 
 
 OPTIONAL:
-MOVEMENT ANIMATIONS
-MUSIC
-BOSS
-MENU IMAGES WEAPONS
-ADDITIONAL EFFECTS (ATTACK, SOUND)
+1. ADDITIONAL EFFECTS (ATTACK, SOUND)                      * oldHealth != health -> Image of the player on red
+2. MUSIC
+3. TELEPORTATION
+4. MOVEMENT ANIMATIONS (PLAYER, ENEMY) *ENEMY CHECK IF WAIT FUNCTION IS COMPATIBLE WITH SWING, AND SWING VISUALS WITH LOOPS.
+5. BOSS
+6. MENU IMAGES WEAPONS
+*SLIME REVIVE?????
+
  */
