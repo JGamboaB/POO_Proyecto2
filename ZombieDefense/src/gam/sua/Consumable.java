@@ -1,14 +1,14 @@
 package gam.sua;
 
 public class Consumable extends Items{
-    private int health = 0;
-    private boolean poison = false;
+    private final int health;
+    private final boolean poison;
 
-    /** Constructor
-     * @param i
-     * @param name
-     * @param h
-     * @param p
+    /**Constructor
+     * @param i int id
+     * @param name String
+     * @param h int health
+     * @param p boolean poison
      */
     Consumable(int i, String name, int h, boolean p){
         super(i, name);
@@ -16,10 +16,12 @@ public class Consumable extends Items{
         poison = p;
     }
 
-    /** Getters
-     * @return
-     */
+    /**Returns the health attribute
+     * @return health */
     public int getHealth() {return health;}
 
+
+    /**Returns the poison attribute
+     * @return poison */
     public boolean curesPoison() {return poison;}
 }

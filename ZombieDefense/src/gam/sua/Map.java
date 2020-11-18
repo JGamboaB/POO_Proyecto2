@@ -26,6 +26,7 @@ public class Map{
     private final Enemy[] Ghosts = new Enemy[4];     //Can walk through
     private final List<Enemy> activeEnemies = new ArrayList<>();
 
+    //Map & Inventory
     private int[][] matrix;
 
     private final List<Items> sharedInventory = new ArrayList<>();
@@ -36,6 +37,17 @@ public class Map{
     private final JFrame frame = new JFrame();
     private final JPanel panel = new JPanel();
     private final Menu Menu = new Menu();
+
+    //Images
+    private final JLabel bg = new JLabel(new ImageIcon("images\\MapV2.png"));
+    private final JLabel victoryScreen = new JLabel(new ImageIcon("images\\victory.png"));
+    private final JLabel defeatScreen = new JLabel(new ImageIcon("images\\defeat.png"));
+    private final boolean[] state = new boolean[]{false,false};
+    private final JLabel[] playerImgs = new JLabel[3];
+    private final ImageIcon[] enemyImgs = new ImageIcon[4];
+
+    private final ImageIcon attackArea = new ImageIcon("images\\attack.png");
+    private final ImageIcon shine = new ImageIcon("images\\shine.png");
 
     //Variables
     private int round = 0;
@@ -49,18 +61,6 @@ public class Map{
     private int valueBefore = 0;
 
     private final Random random = new Random();
-
-    //Images
-    private final JLabel bg = new JLabel(new ImageIcon("images\\MapV2.png"));
-    private final JLabel victoryScreen = new JLabel(new ImageIcon("images\\victory.png"));
-    private final JLabel defeatScreen = new JLabel(new ImageIcon("images\\defeat.png"));
-    private final boolean[] state = new boolean[]{false,false};
-    private final JLabel[] playerImgs = new JLabel[3];
-    private final ImageIcon[] enemyImgs = new ImageIcon[4];
-
-    private final ImageIcon attackArea = new ImageIcon("images\\attack.png");
-    private final ImageIcon shine = new ImageIcon("images\\shine.png");
-
 
     /**
      * Constructor
@@ -446,8 +446,8 @@ public class Map{
     // / / / / / / / / / / MOVEMENT
 
     /** Move player by entering the input (keys WASD) and updates the Frame.
-     * @param player
-     * @param dir
+     * @param player Player
+     * @param dir char
      */
     public void movePlayerWASD(Player player, char dir){
         int r = player.getPosition()[0], c = player.getPosition()[1];
@@ -522,7 +522,7 @@ public class Map{
     // / / / / / / / / / / ATTACK
 
     /** Show in screen the range that the player has to attack.
-     * @param player
+     * @param player Player
      */
     void showAttackRange(Player player){ //Print Area that the Player can Attack.
         int range = player.getWeaponRange();
@@ -549,8 +549,8 @@ public class Map{
 
 
     /** Attack function. By getting the row and column of the matrix, attacks the enemy in it.
-     * @param r
-     * @param c
+     * @param r int row
+     * @param c int column
      */
     public void attack(int r, int c){
         Player player = Players.get(playersTurn);
@@ -614,13 +614,11 @@ public class Map{
 
     /** Add the item entered into the List of Items 'sharedInventory' and remove it from the possible
      * options that can be obtained
-     * @param item
+     * @param item Items
      */
     public void addToSharedInv(Items item){
         int index = (!sharedInventory.contains(item))?0:sharedInventory.size(); //Change page with R if it fails //-1
         sharedInventory.add(index,item);
-
-        //sharedInventory.add(item);
 
         if (item.getId() < 7) //Only removes the Weapons from the possible items
             inv.remove(item);
@@ -633,7 +631,7 @@ public class Map{
 
 
     /** Checks the amount of appearances of the entered item inside the sharedInventory.
-     * @param item
+     * @param item Items
      * @return res. Integer of the amount of appearances of the Item.
      */
     public int listAmount(Items item){
@@ -646,8 +644,8 @@ public class Map{
 
 
     /** Checks if the weapon attributes are already used in a character to determine if the weapon is being used
-     * @param weapon
-     * @param player
+     * @param weapon Weapon
+     * @param player Player
      * @return boolean. Return if the weapon is equipped in a player.
      */
     public boolean weaponAlreadyEquipped(Weapons weapon, Player player){
@@ -666,7 +664,7 @@ public class Map{
 
 
     /** Equips an item and it's attributes into the specified player.
-     * @param num
+     * @param num int
      */
     public void equipItem(int num){
         Items item = sharedInventory.get(num);
@@ -762,8 +760,8 @@ public class Map{
     }
 
     /** Returns the enemy that is in the matrix space by entering the row and column.
-     * @param r
-     * @param c
+     * @param r int row
+     * @param c int column
      * @return enemy
      */
     public Enemy getEnemyByPos(int r, int c){
@@ -776,7 +774,7 @@ public class Map{
     }
 
     /** Enemy death and it's effects on the matrix.
-     * @param enemy
+     * @param enemy Enemy
      */
     public void enemyDeath(Enemy enemy){
         if (enemy.isDead()){
@@ -800,9 +798,9 @@ public class Map{
     }
 
     /** Creates an enemy depending on the parameters entered (position in matrix, matrixId & id).
-     * @param position
-     * @param matrixId
-     * @param id
+     * @param position int[]
+     * @param matrixId int
+     * @param id int
      */
     public void createEnemy(int[] position, int matrixId, int id){
         switch (matrixId) {
@@ -830,9 +828,9 @@ public class Map{
     }
 
     /** Moves the enemy step by step.
-     * @param character
-     * @param matrixId
-     * @param steps
+     * @param character Character
+     * @param matrixId int
+     * @param steps List<Node>
      */
     public void animMove(Character character, int matrixId, List<Node> steps){
         for (Node coordinates : steps) {
@@ -843,8 +841,8 @@ public class Map{
     }
 
     /** Attack function of the enemy if possible.
-     * @param enemy
-     * @param playerPos
+     * @param enemy Enemy
+     * @param playerPos int[]
      */
     public void enemyAttack (Enemy enemy, int[] playerPos){
         Player objective = null;
@@ -1047,7 +1045,6 @@ public class Map{
 MUST:
 DELETE EXTRAS                       D
 COMMENTS                            GD
-CAN EVADE                           ???
 
 
 OPTIONAL:
@@ -1059,5 +1056,4 @@ OPTIONAL:
 6. MENU IMAGES WEAPONS
 *SLIME REVIVE?????
 *BALANCE ENEMY DAMAGE & ABILITIES
-
  */
