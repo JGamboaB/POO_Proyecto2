@@ -132,4 +132,8 @@ public class Player extends Character{
      * @param _isPoisoned int */
     public void newIsPoisoned(int _isPoisoned) {this.isPoisoned = _isPoisoned;}
 
+
+    /** Returns the canEvade attribute
+     * @return canEvade */
+    public boolean getCanEvade(){return canEvade;}
 }

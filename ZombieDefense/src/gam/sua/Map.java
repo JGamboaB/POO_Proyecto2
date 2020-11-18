@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-
+import java.lang.Math;
 
 public class Map{
 
@@ -859,7 +859,10 @@ public class Map{
             objective.newIsPoisoned(3);
         }
 
-        objective.subtractHealth(enemy.getDamage());   // Attack
+        int[] posibleMulti = {0,1,1};
+        int multi = (objective.getCanEvade())? posibleMulti[Math.abs(random.nextInt()%3)]:1;
+
+        objective.subtractHealth(enemy.getDamage()*multi);   // Attack
 
         if (objective.isDead()){
             objective.setHealth(0);
