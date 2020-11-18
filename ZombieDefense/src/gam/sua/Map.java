@@ -267,7 +267,7 @@ public class Map{
     }
 
     //EXTRA
-    void charMatrix2(){
+    void charMatrix2(int id, char dir){
         for (int r = 0; r < 25; r++){
             for (int c = 0; c < 45; c++){
 
@@ -276,8 +276,16 @@ public class Map{
                         for (int i = 0; i < 3; i++){
 
                             if (Players.get(i).getPosition()[0] == r && Players.get(i).getPosition()[1] == c){
-                                playerImgs[i].setBounds(c*32,r*32,32,32);
-                                panel.add(playerImgs[i]);
+
+                                if (Players.get(i).getId() == i && steps > 1){
+                                    JLabel move = new JLabel(new ImageIcon("images\\CharIMG\\Movement\\"+id+dir+"png"));
+                                    move.setBounds(c*32,r*32,32,32);
+                                    panel.add(move);
+
+                                } else {
+                                    playerImgs[i].setBounds(c*32,r*32,32,32);
+                                    panel.add(playerImgs[i]);
+                                }
                             }
 
                         } break;
@@ -325,6 +333,8 @@ public class Map{
 
             }
         }
+        frame.revalidate();
+        frame.repaint();
     }
 
 
@@ -535,15 +545,6 @@ public class Map{
             doneActs[0] = 1;
             action = -1;
         }updateFrame();
-
-    }
-
-    public static void wait(int ms){
-        try {
-            Thread.sleep(ms);
-        } catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
     }
 
 
@@ -677,14 +678,11 @@ public class Map{
 
     /** Checks if the weapon attributes are already used in a character to determine if the weapon is being used
      * @param weapon Weapon
-     * @param player Player
      * @return boolean. Return if the weapon is equipped in a player.
      */
-    public boolean weaponAlreadyEquipped(Weapons weapon, Player player){
+    public boolean weaponAlreadyEquipped(Weapons weapon){
         int DMG;
         for (Player otherPlayer: Players){
-            //if (otherPlayer.getId() == player.getId())
-            //    continue;
 
             DMG = (otherPlayer.getDoubleDamage())? otherPlayer.getDMG()/2 : otherPlayer.getDMG();
 
@@ -704,7 +702,7 @@ public class Map{
 
         if (item instanceof Weapons){
 
-            if (weaponAlreadyEquipped((Weapons) item,player))
+            if (weaponAlreadyEquipped((Weapons) item))
                 return;
 
             player.setDMG(((Weapons) item).getDamage());
@@ -734,6 +732,7 @@ public class Map{
 
         doneActs[2] = 1;//
         action = -1; //
+        soundEffects.playSoundEffects(6);
     }
 
 
@@ -826,6 +825,8 @@ public class Map{
 
             matrix[enemy.getPosition()[0]][enemy.getPosition()[1]] = matrixId;
             checkActiveEnemies();
+
+            soundEffects.playSoundEffects(3);
         }
     }
 
@@ -974,6 +975,7 @@ public class Map{
             if (round == 6){ //6
                 state[0] = true;
                 updateFrame();
+                soundEffects.playSoundEffects(7);
             }
 
         } steps = (Players.size() == 0)? 0:Players.get(playersTurn).getSteps();
@@ -1009,6 +1011,7 @@ public class Map{
     public void defeat(){
         if (Gringo.isDead() && David.isDead() && Amalia.isDead()){
             state[1] = true;
+            soundEffects.playSoundEffects(8);
             return;
         }
 
@@ -1019,6 +1022,7 @@ public class Map{
             if (matrix[r[i]][c[i]] > 2 && matrix[r[i]][c[i]] < 7){
                 state[1] = true;
                 updateFrame();
+                soundEffects.playSoundEffects(8);
                 break;
             }
         }
