@@ -1,5 +1,4 @@
 package gam.sua;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +13,15 @@ public class Enemy extends Character{
     private int[] lastPositions;
     private int[] base;
 
+
+    /** Constructor
+     * @param _position int[] of the position in the matrix
+     * @param _health int health
+     * @param _range int range
+     * @param _id int id
+     * @param name String name
+     * @param objective int[] objective. Coordinates in the matrix of objective
+     */
     Enemy(int[] _position, int _health, int _range, int _id, String name, int[] objective){
         super(_position, _health, _range, _id);
         base = objective;
@@ -22,37 +30,44 @@ public class Enemy extends Character{
         poison = false;
         revive = false;
         damage = 0;
-        switch (name){
-            case "ghost":
+
+        switch (name) {
+            case "ghost" -> {
                 ghost = true;
                 damage = 75; //10
-                break;
-            case "skeleton":
-                damage = 25; //15
-                break;
-            case "zombie":
+            }
+            case "skeleton" -> damage = 25; //15
+            case "zombie" -> {
                 poison = true;
                 damage = 50; //10
-                break;
-            case "slime":
+            }
+            case "slime" -> {
                 revive = true;
                 damage = 15; //5
-                break;
+            }
         }
     }
 
-    public void dropItem(){
 
-    }
+    /**Returns the poison attribute
+     * @return poison */
+    public boolean getPoison() {return poison;}
 
-    public void attack(){
 
-    }
+    /**Returns the revive attribute
+     * @return revive boolean */
+    public boolean getRevive() {return revive;}
 
-    public boolean getPoison() { return poison; }
-    public boolean getRevive() { return revive; }
-    public int getDamage() { return damage; }
-    public void setRevive(boolean revive) { this.revive = revive; }
+
+    /**Returns the damage attribute
+     * @return damage int*/
+    public int getDamage() {return damage;}
+
+
+    /**Set the revive attribute
+     * @param revive boolean */
+    public void setRevive(boolean revive) {this.revive = revive;}
+
 
     public void getObjectivePos(Map map){
         if (map.isNear(this.getPosition(), 1, 2) != null){              // Jugador Cercano (Ataque, No Moverse)

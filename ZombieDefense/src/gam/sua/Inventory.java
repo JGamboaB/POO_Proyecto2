@@ -13,6 +13,8 @@ public class Inventory {
     private final int[] health = {25,100,0};
     private final boolean[] curesPoison = {false,true,true};
 
+
+    /** Creates the items and adds them to the inventory List */
     public void createItems(){
         for (int i = 0; i < 10; i++){
             if (i < 7){
@@ -25,12 +27,19 @@ public class Inventory {
         }
     }
 
-    public Inventory(){
-        createItems();
-    }
 
+    /** Calls the function createItems() */
+    public Inventory(){createItems();}
+
+
+    /** Returns the inventory attribute
+     * @return inventory */
     public List<Items> getInventory(){return inventory;}
 
+
+    /** Returns the item in the inventory list by their id
+     * @param id
+     * @return item */
     public Items getItemById(int id){
         for (Items item: inventory){
             if (item.getId() == id)

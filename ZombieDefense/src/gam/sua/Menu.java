@@ -9,8 +9,6 @@ import java.util.List;
 
 public class Menu extends JPanel{
 
-    private Items[] inventory;
-
     //Image
     private final JLabel playerLabel = new JLabel();
 
@@ -22,9 +20,12 @@ public class Menu extends JPanel{
     private final JLabel tNotes = new JLabel();
     private final JLabel[] tNormalText = {tNormal,tNotes};
 
-    Menu() throws IOException, FontFormatException {
-        initText();
-    }
+
+    /**Constructor
+     * @throws IOException if there's an error by getting the font.
+     * @throws FontFormatException if there's an error by getting the font.
+     */
+    Menu() throws IOException, FontFormatException {initText();}
 
     public void initText(){
         for (int i = 0; i < 2; i++){
@@ -35,6 +36,12 @@ public class Menu extends JPanel{
         }
     }
 
+    /** The menu panel displays the normal state of the menu
+     * @param player Player
+     * @param done int[]
+     * @param round int
+     * @param steps int
+     */
     public void showMenu(Player player, int[] done, int round, int steps){//An int array parameter [0,0,0] should modify "used"
         String[] used = {"","",""};
         String poison = (player.getIsPoisoned() > 0)?"<br>*Is Poisoned ("+player.getIsPoisoned()+")":"<br>";
@@ -63,8 +70,13 @@ public class Menu extends JPanel{
         this.add(playerLabel);
     }
 
+    /**
+     * The menu panel displays the inventory.
+     * @param player Player
+     * @param sharedInv List<Items>
+     */
     public void showInventory(Player player, List<Items> sharedInv){
-        String items = " ";
+        StringBuilder items = new StringBuilder(" ");
         String equipped = equippedWeapon(player,sharedInv);
         List<String> alreadyIn = new ArrayList<>();
         int i = 0;
@@ -76,10 +88,10 @@ public class Menu extends JPanel{
                 equ = " (Equipped)";
 
             if (item instanceof Weapons){
-                items += "["+i+"] "+ item.getName() + " DMG: " + ((Weapons) item).getDamage() + " Range: " + ((Weapons) item).getRange() + equ +"<br><br>";
+                items.append("[").append(i).append("] ").append(item.getName()).append(" DMG: ").append(((Weapons) item).getDamage()).append(" Range: ").append(((Weapons) item).getRange()).append(equ).append("<br><br>");
             } else {
                 if (!alreadyIn.contains(item.getName())){
-                    items += "["+i+"] "+ item.getName() + " " + amountInInv(sharedInv, item.getId())+ " in Inventory<br><br>";
+                    items.append("[").append(i).append("] ").append(item.getName()).append(" ").append(amountInInv(sharedInv, item.getId())).append(" in Inventory<br><br>");
                 }
                 alreadyIn.add(item.getName());
                 //items += "["+i+"] "+ item.getName() + "<br><br>";
@@ -93,6 +105,11 @@ public class Menu extends JPanel{
         this.add(tNotes);
     }
 
+    /**Returns the amount of items in the inventory List
+     * @param sharedInv List<Items>
+     * @param id int
+     * @return res
+     */
     public int amountInInv(List<Items> sharedInv, int id){
         int res = 0;
 
@@ -104,6 +121,11 @@ public class Menu extends JPanel{
         return res;
     }
 
+    /** Returns the name of the equipped weapon by a player
+     * @param player Player
+     * @param sharedInv List<Items>
+     * @return name
+     */
     public String equippedWeapon(Player player, List<Items> sharedInv){
         int DMG = player.getDMG();
         if (player.getDoubleDamage())

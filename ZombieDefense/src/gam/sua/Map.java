@@ -21,13 +21,12 @@ public class Map{
 
     //Enemies
     private final Enemy[] Skeletons = new Enemy[10]; //Normal
-    private final Enemy[] Slimes = new Enemy[10];    //Weak/Revive (Always 2 hits to kill)
+    private final Enemy[] Slimes = new Enemy[10];    //Weak/Revive (2 hits to kill)
     private final Enemy[] Zombies = new Enemy[6];    //Poison
     private final Enemy[] Ghosts = new Enemy[4];     //Can walk through
     private final List<Enemy> activeEnemies = new ArrayList<>();
-    //private final Enemy[] ActiveEnemies = new Enemy[30];
 
-    private int[][] matrix;// = new int[50][30];
+    private int[][] matrix;
 
     private final List<Items> sharedInventory = new ArrayList<>();
     private final Inventory InvObject = new Inventory();
@@ -38,17 +37,18 @@ public class Map{
     private final JPanel panel = new JPanel();
     private final Menu Menu = new Menu();
 
-
+    //Variables
+    private int round = 0;
     private int action = -1; //0 move, 1 attack, 2 equip
     private int[] doneActs = new int[]{0,0,0};
-    private final int[] numEnemies = new int[]{0,0,0,0}; //Skeleton, Slime, Zombie, Ghost
+
     private int playersTurn = 0; //0,1,2
-    private int round = 0;
+    private final int[] numEnemies = new int[]{0,0,0,0}; //Skeleton, Slime, Zombie, Ghost
+
     private int steps = Gringo.getSteps();
     private int valueBefore = 0;
 
     private final Random random = new Random();
-    //Move all the creatures simultaneously?
 
     //Images
     private final JLabel bg = new JLabel(new ImageIcon("images\\MapV2.png"));
@@ -62,6 +62,11 @@ public class Map{
     private final ImageIcon shine = new ImageIcon("images\\shine.png");
 
 
+    /**
+     * Constructor
+     * @throws IOException if there's an error by getting the font.
+     * @throws FontFormatException if there's an error by getting the font.
+     */
     public Map() throws IOException, FontFormatException {
         //Basic Stuff
         int Width=1440+14,Height=800+35;
@@ -90,6 +95,11 @@ public class Map{
 
     }
 
+
+    /** Initialize all the panels used.
+     * @param width int
+     * @param height int
+     */
     public void initPanels(int width, int height){
         panel.setBounds(0,0,width,height);
         panel.setLayout(null);
@@ -101,6 +111,8 @@ public class Map{
 
     }
 
+
+    /** Initializes all the images used of the players and enemies. */
     void initImgs(){
         for (int i = 0; i < 7; i++){
             if (i < 3)
@@ -113,7 +125,19 @@ public class Map{
 
     // / / / / / / / / / / MATRIX
 
-    public void initMatrix(){ //0 can move, 1 occupied, 2 player, 3 skeleton, 4 slime, 5 zombie, 6 ghost, 7 boss, 8 chest, 9 sound, 10 item, 11 walking space only for players
+    /**
+     * Initialize the matrix
+     * Numbers used:
+     * 0. walkable space
+     * 1. occupied
+     * 2. player
+     * 3. skeleton, 4. slime, 5. zombie, 6. ghost, 7. boss
+     * 8. chest
+     * 9. sound
+     * 10. item
+     * 11. walkable space for players
+     */
+    public void initMatrix(){
         matrix = new int[][]{
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,8,8,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
@@ -143,16 +167,27 @@ public class Map{
         };
     }
 
+
+    /** Change space in the matrix to matrixID
+     * @param r int
+     * @param c int
+     * @param matrixID int
+     */
     void updateMatrix(int r, int c, int matrixID){
         matrix[r][c] = matrixID;
     }
 
-    //Called when a character moves
-    void cleanLeftBehind(Character Char){
+
+    /** The old position of the Character entered is cleaned in the matrix by using the variable 'valueBefore'
+     * @param Char Character
+     */
+    void cleanLeftBehind(Character Char){ //Called when a character moves
         int r = Char.getOldPos()[0], c = Char.getOldPos()[1];
         matrix[r][c] = valueBefore;
     }
 
+
+    /** Represent the numbers in the matrix with their respective images. */
     void charMatrix(){
         for (int r = 0; r < 25; r++){
             for (int c = 0; c < 45; c++){
@@ -208,6 +243,7 @@ public class Map{
         }
     }
 
+    //EXTRA
     void charMatrix2(){
         for (int r = 0; r < 25; r++){
             for (int c = 0; c < 45; c++){
@@ -268,6 +304,8 @@ public class Map{
         }
     }
 
+
+    /** Starting position of the players and the starting inventory */
     void startingPos(){
         updateMatrix(13,7,2);
         updateMatrix(18,9,2);
@@ -279,6 +317,8 @@ public class Map{
         addToSharedInv(InvObject.getItemById(2));
     }
 
+
+    /** Updates the frame and each one of its panels */
     void updateFrame(){
         frame.getContentPane().removeAll();
         panel.removeAll();
@@ -291,7 +331,6 @@ public class Map{
 
         Menu.showMenu(player,doneActs,round,steps);
 
-
         if (!state[0] && !state[1]){ //NORMAL
             frame.add(Menu);
             frame.add(panel);
@@ -301,20 +340,17 @@ public class Map{
         if (state[1])
             frame.add(defeatScreen); //DEFEAT
 
-
         frame.revalidate();
         frame.repaint();
     }
-
-    public int[][] getMatrix(){return matrix;}
 
     public int valorPos(int r, int c){return matrix[r][c];}
 
 
     // / / / / / / / / ACTIONS / / / / / / / / //
 
-    //ACTIONS KEYBOARD
-    KeyListener keyboard = new KeyListener() {
+    /** Actions based on pressed keys. Changes the variable 'action' */
+    KeyListener keyboard = new KeyListener() { //ACTIONS KEYBOARD
         @Override
         public void keyTyped(KeyEvent e) {}
 
@@ -370,8 +406,9 @@ public class Map{
         }
     };
 
-    //ACTIONS MOUSE CLICK
-    MouseListener mouse = new MouseListener() {
+
+    /** Actions based on the mouse. If variable action = 1 and the player hasn't attacked yet, attack function is called. */
+    MouseListener mouse = new MouseListener(){ //ACTIONS MOUSE CLICK
         @Override
         public void mouseClicked(MouseEvent e) {
             double x = e.getX(), y = e.getY();
@@ -408,6 +445,10 @@ public class Map{
 
     // / / / / / / / / / / MOVEMENT
 
+    /** Move player by entering the input (keys WASD) and updates the Frame.
+     * @param player
+     * @param dir
+     */
     public void movePlayerWASD(Player player, char dir){
         int r = player.getPosition()[0], c = player.getPosition()[1];
         int rAdd = 0, cAdd = 0;
@@ -480,6 +521,9 @@ public class Map{
 
     // / / / / / / / / / / ATTACK
 
+    /** Show in screen the range that the player has to attack.
+     * @param player
+     */
     void showAttackRange(Player player){ //Print Area that the Player can Attack.
         int range = player.getWeaponRange();
         int r = player.getPosition()[0], c = player.getPosition()[1];
@@ -503,6 +547,11 @@ public class Map{
 
     }
 
+
+    /** Attack function. By getting the row and column of the matrix, attacks the enemy in it.
+     * @param r
+     * @param c
+     */
     public void attack(int r, int c){
         Player player = Players.get(playersTurn);
         int[] pos = player.getPosition();
@@ -535,6 +584,8 @@ public class Map{
         }
     }
 
+
+    /** Clean all the sound spaces in the matrix. It is called after the enemy's turn */
     public void cleanSound(){
         for (int r = 0; r < 25; r++){
             for (int c = 0; c < 45; c++){
@@ -547,6 +598,7 @@ public class Map{
 
     // / / / / / / / / / / INVENTORY
 
+    /** Show the inventory in the menu panel */
     public void showInv(){
         Menu.removeAll();
         Menu.showInventory(Players.get(playersTurn),sharedInventory);
@@ -559,6 +611,11 @@ public class Map{
         frame.repaint();
     }
 
+
+    /** Add the item entered into the List of Items 'sharedInventory' and remove it from the possible
+     * options that can be obtained
+     * @param item
+     */
     public void addToSharedInv(Items item){
         int index = (!sharedInventory.contains(item))?0:sharedInventory.size(); //Change page with R if it fails //-1
         sharedInventory.add(index,item);
@@ -574,6 +631,11 @@ public class Map{
         }
     }
 
+
+    /** Checks the amount of appearances of the entered item inside the sharedInventory.
+     * @param item
+     * @return res. Integer of the amount of appearances of the Item.
+     */
     public int listAmount(Items item){
         int res = 0;
         for (Items items : sharedInventory){
@@ -582,11 +644,38 @@ public class Map{
         } return res;
     }
 
+
+    /** Checks if the weapon attributes are already used in a character to determine if the weapon is being used
+     * @param weapon
+     * @param player
+     * @return boolean. Return if the weapon is equipped in a player.
+     */
+    public boolean weaponAlreadyEquipped(Weapons weapon, Player player){
+        int DMG;
+        for (Player otherPlayer: Players){
+            if (otherPlayer.getId() == player.getId())
+                continue;
+
+            DMG = (otherPlayer.getDoubleDamage())? otherPlayer.getDMG()/2 : otherPlayer.getDMG();
+
+            if (weapon.getDamage() == DMG && weapon.getRange() == otherPlayer.getWeaponRange())
+                return true;
+
+        } return false;
+    }
+
+
+    /** Equips an item and it's attributes into the specified player.
+     * @param num
+     */
     public void equipItem(int num){
         Items item = sharedInventory.get(num);
         Player player = Players.get(playersTurn);
 
         if (item instanceof Weapons){
+
+            if (weaponAlreadyEquipped((Weapons) item,player))
+                return;
 
             player.setDMG(((Weapons) item).getDamage());
             player.setWeaponRange(((Weapons) item).getRange());
@@ -599,11 +688,13 @@ public class Map{
             if (item.getId() == 8){ //REVIVE
                 player = lowestHealthPlayer(); //Gives the effects to the player on the lowest health or dead
 
-                int[] pos = isNear(new int[]{11,4},1,0);
-                player.setPosition(pos);
-                updateMatrix(pos[0],pos[1],2);
-                Players.add(player);
-                updateFrame();
+                if (player.isDead()){
+                    int[] pos = isNear(new int[]{11,4},1,0);
+                    player.setPosition(pos);
+                    updateMatrix(pos[0],pos[1],2);
+                    Players.add(player);
+                    updateFrame();
+                }
             }
 
             player.addHealth(((Consumable) item).getHealth());
@@ -615,6 +706,8 @@ public class Map{
         action = -1; //
     }
 
+
+    /** Resets the menu panel to the normal state. */
     public void resetMenu(){
         Menu.removeAll();
         Menu.showMenu(Players.get(playersTurn),doneActs,round,steps);
@@ -631,6 +724,8 @@ public class Map{
 
     // / / / / / / / / / / PLAYERS
 
+    /** Gets the player with the lowest health. Called when the consumable revive is used.
+     * @return player with the lowest health. */
     public Player lowestHealthPlayer(){
         Player player = totalPlayers[0];
 
@@ -646,6 +741,8 @@ public class Map{
 
     // / / / / / / / / / / ENEMIES
 
+    /** Returns the amount of enemies inside the matrix.
+     * @return res */
     public int enemiesOnMatrix(){
         int res = 0;
         for (int r = 0; r < 25; r++){
@@ -656,6 +753,7 @@ public class Map{
         } return res;
     }
 
+    /** Removes the enemies of the List 'activeEnemies' if they are dead. */
     public void checkActiveEnemies(){
         for (int i = 0; i < activeEnemies.size(); i++){
             if (activeEnemies.get(i).isDead())
@@ -663,6 +761,11 @@ public class Map{
         }
     }
 
+    /** Returns the enemy that is in the matrix space by entering the row and column.
+     * @param r
+     * @param c
+     * @return enemy
+     */
     public Enemy getEnemyByPos(int r, int c){
         for (Enemy activeEnemy : activeEnemies) {
             if (activeEnemy.getPosition()[0] == r && activeEnemy.getPosition()[1] == c) {
@@ -672,6 +775,9 @@ public class Map{
         return null;
     }
 
+    /** Enemy death and it's effects on the matrix.
+     * @param enemy
+     */
     public void enemyDeath(Enemy enemy){
         if (enemy.isDead()){
 
@@ -693,6 +799,11 @@ public class Map{
         }
     }
 
+    /** Creates an enemy depending on the parameters entered (position in matrix, matrixId & id).
+     * @param position
+     * @param matrixId
+     * @param id
+     */
     public void createEnemy(int[] position, int matrixId, int id){
         switch (matrixId) {
             case 3 -> {
@@ -718,6 +829,49 @@ public class Map{
         }
     }
 
+    /** Moves the enemy step by step.
+     * @param character
+     * @param matrixId
+     * @param steps
+     */
+    public void animMove(Character character, int matrixId, List<Node> steps){
+        for (Node coordinates : steps) {
+            character.setPosition(new int[]{coordinates.getCoords()[0], coordinates.getCoords()[1]});
+            cleanLeftBehind(character);
+            updateMatrix(coordinates.getCoords()[0], coordinates.getCoords()[1], matrixId);
+        } updateFrame();
+    }
+
+    /** Attack function of the enemy if possible.
+     * @param enemy
+     * @param playerPos
+     */
+    public void enemyAttack (Enemy enemy, int[] playerPos){
+        Player objective = null;
+        for (Player player : Players){
+            if (Arrays.equals(player.getPosition(),playerPos)){
+                objective = player;
+            }
+        }
+
+        if (objective == null)
+            return;
+
+        if (enemy.getPoison()){
+            objective.newIsPoisoned(3);
+        }
+
+        objective.subtractHealth(enemy.getDamage());   // Attack
+
+        if (objective.isDead()){
+            objective.setHealth(0);
+            int[] pos = objective.getPosition();
+            matrix[pos[0]][pos[1]] = 0;
+            Players.remove(objective);
+        }
+    }
+
+    /** Spawners that activate depending on the round. */
     public void spawners(){ //Validate that there is no player in the spawn points
         switch (round){
             case 5:
@@ -755,9 +909,8 @@ public class Map{
 
     // / / / / / / / / / / TURN
 
+    /** Changes the turn of the character. If all the players already had their turn, the enemies turn starts */
     public void changeTurn(){
-        //System.out.println("Enemies on matrix: " + enemiesOnMatrix());
-
         playersTurn++;
 
         if (playersTurn >= Players.size()){
@@ -787,6 +940,7 @@ public class Map{
         } steps = (Players.size() == 0)? 0:Players.get(playersTurn).getSteps();
     }
 
+    /** Enemies turn and actions */
     public void enemiesTurn(){
         //System.out.println("---");
         for (Enemy enemy: activeEnemies){
@@ -808,39 +962,11 @@ public class Map{
         //updateFrame();
     }
 
-    public void animMove(Character character, int matrixId, List<Node> steps){
-        for (Node coordinates : steps) {
-            character.setPosition(new int[]{coordinates.getCoords()[0], coordinates.getCoords()[1]});
-            cleanLeftBehind(character);
-            updateMatrix(coordinates.getCoords()[0], coordinates.getCoords()[1], matrixId);
-        } updateFrame();
-    }
-
-    public void enemyAttack (Enemy enemy, int[] playerPos){
-        Player objective = null;
-        for (Player player : Players){
-            if (Arrays.equals(player.getPosition(),playerPos)){
-                objective = player;
-            }
-        }
-
-        if (enemy.getPoison()){
-            objective.newIsPoisoned(3);
-        }
-
-        objective.subtractHealth(enemy.getDamage());   // Attack
-
-        if (objective.isDead()){
-            objective.setHealth(0);
-            int[] pos = objective.getPosition();
-            matrix[pos[0]][pos[1]] = 0;
-            Players.remove(Players.indexOf(objective));
-        }
-    }
-
 
     // / / / / / / / / / / END GAME
 
+    /** Checks if the conditions of defeat are met and if they are, the variable 'state' changes. This variable is
+     * used on updateFrame() to show the defeat image. */
     public void defeat(){
         if (Gringo.isDead() && David.isDead() && Amalia.isDead()){
             state[1] = true;
@@ -919,7 +1045,6 @@ public class Map{
 
 /*
 MUST:
-ONLY ONE PERSON CAN EQUIP AN ITEM   G
 DELETE EXTRAS                       D
 COMMENTS                            GD
 
