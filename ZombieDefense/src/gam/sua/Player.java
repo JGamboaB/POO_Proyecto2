@@ -77,16 +77,30 @@ public class Player extends Character{
         return DMG*multi;
     }
 
-
-    /** Set the DMG attribute to the player
-     * @param DMG int */
-    public void setDMG(int DMG){this.DMG = DMG;}
-
-
     /** Returns the weaponRange attribute
      * @return weaponRange */
     public int getWeaponRange(){ return weaponRange; }
 
+    /** Returns the luck attribute
+     * @return luck */
+    public Boolean getLuck() {return luck;}
+
+    /** Returns the doubleDamage attribute
+     * @return doubleDamage */
+    public boolean getDoubleDamage(){return doubleDamage;}
+
+    /** Returns the sound attribute
+     * @return sound */
+    public boolean getSound(){return sound;}
+
+    /** Returns the lessSound attribute
+     * @return lessSound */
+    public boolean getLessSound(){return lessSound;}
+
+
+    /** Set the DMG attribute to the player
+     * @param DMG int */
+    public void setDMG(int DMG){this.DMG = DMG;}
 
     /** Sets the weaponRange attribute
      * @param range int */
@@ -100,6 +114,10 @@ public class Player extends Character{
         isPoisoned*=multi;
     }
 
+    /** Sets the sound attribute
+     * @param sound boolean */
+    public void setSound(boolean sound){this.sound = sound;}
+
 
     /** Poison damage, decreases the players health. */
     public void poisonDamage(){
@@ -109,32 +127,9 @@ public class Player extends Character{
         }
     }
 
-    /** Returns the luck attribute
-     * @return luck */
-    public Boolean getLuck() {return luck;}
-
-
-    /** Returns the doubleDamage attribute
-     * @return doubleDamage */
-    public boolean getDoubleDamage(){return doubleDamage;}
-
 
     /** Sets the isPoison attribute
      * @param _isPoisoned int */
     public void newIsPoisoned(int _isPoisoned) {this.isPoisoned = _isPoisoned;}
 
-
-    /** Sets the sound attribute
-     * @param sound boolean */
-    public void setSound(boolean sound){this.sound = sound;}
-
-
-    /** Returns the sound attribute
-     * @return sound */
-    public boolean getSound(){return sound;}
-
-
-    /** Returns the lessSound attribute
-     * @return lessSound */
-    public boolean getLessSound(){return lessSound;}
 }

@@ -9,6 +9,12 @@ public class Character {
     private int steps;
     private int id;
 
+    /** Constructor
+     * @param _position
+     * @param _health
+     * @param _steps
+     * @param _id
+     */
     Character(int[] _position, int _health, int _steps, int _id) {
         position = _position;
         health = _health;
@@ -17,28 +23,35 @@ public class Character {
         oldPos = new int[] {0,0};
     }
 
+    /** Getters & Setters
+     * @return
+     */
     public int[] getPosition() {
         return position;
     }
-
     public int[] getOldPos() {
         return oldPos;
     }
+    public int getHealth(){
+        return health;
+    }
+    public int getSteps(){
+        return steps;
+    }
+    public int getId() {return id;}
 
     public void setPosition(int[] position) {
         if (!Arrays.equals(this.position,position))
             this.oldPos = this.position;
         this.position = position;
     }
-
-    public int getHealth(){
-        return health;
-    }
-
     public void setHealth(int health){
         this.health = health;
     }
 
+    /** Adds and updates Health
+     * @param health
+     */
     public void addHealth(int health){
         this.health += health;
         if (this.health > 100)
@@ -47,13 +60,7 @@ public class Character {
 
     public void subtractHealth(int dmg) {this.health -= dmg; }
 
-    public int getSteps(){
-        return steps;
-    }
-
     public Boolean isDead() {
         return (health <= 0);
     }
-
-    public int getId() {return id;}
 }

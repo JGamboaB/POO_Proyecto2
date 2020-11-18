@@ -1047,6 +1047,7 @@ public class Map{
 MUST:
 DELETE EXTRAS                       D
 COMMENTS                            GD
+CAN EVADE                           ???
 
 
 OPTIONAL:

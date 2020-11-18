@@ -21,12 +21,14 @@ public class Menu extends JPanel{
     private final JLabel[] tNormalText = {tNormal,tNotes};
 
 
-    /**Constructor
+    /** Constructor
      * @throws IOException if there's an error by getting the font.
      * @throws FontFormatException if there's an error by getting the font.
      */
     Menu() throws IOException, FontFormatException {initText();}
 
+    /** Initializes Text
+     */
     public void initText(){
         for (int i = 0; i < 2; i++){
 
@@ -70,8 +72,7 @@ public class Menu extends JPanel{
         this.add(playerLabel);
     }
 
-    /**
-     * The menu panel displays the inventory.
+    /** The menu panel displays the inventory.
      * @param player Player
      * @param sharedInv List<Items>
      */
@@ -105,7 +106,7 @@ public class Menu extends JPanel{
         this.add(tNotes);
     }
 
-    /**Returns the amount of items in the inventory List
+    /** Returns the amount of items in the inventory List
      * @param sharedInv List<Items>
      * @param id int
      * @return res

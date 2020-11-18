@@ -10,9 +10,7 @@ public class Enemy extends Character{
     private boolean poison;
     private boolean revive;
     private int[] objectivePos;
-    private int[] lastPositions;
     private int[] base;
-
 
     /** Constructor
      * @param _position int[] of the position in the matrix
@@ -48,27 +46,32 @@ public class Enemy extends Character{
         }
     }
 
-
-    /**Returns the poison attribute
-     * @return poison */
+    // Getters & Setters
+    /** Returns the poison attribute
+     * @return poison
+     */
     public boolean getPoison() {return poison;}
 
-
-    /**Returns the revive attribute
-     * @return revive boolean */
+    /** Returns the revive attribute
+     * @return revive boolean
+     */
     public boolean getRevive() {return revive;}
 
-
-    /**Returns the damage attribute
-     * @return damage int*/
+    /** Returns the damage attribute
+     * @return damage int
+     */
     public int getDamage() {return damage;}
 
 
-    /**Set the revive attribute
-     * @param revive boolean */
+    /** Set the revive attribute
+     * @param revive boolean
+     */
     public void setRevive(boolean revive) {this.revive = revive;}
 
 
+    /** Changes the Objective Position depending on the priority
+     * @param map
+     */
     public void getObjectivePos(Map map){
         if (map.isNear(this.getPosition(), 1, 2) != null){              // Jugador Cercano (Ataque, No Moverse)
             this.objectivePos = this.getPosition();
@@ -81,9 +84,14 @@ public class Enemy extends Character{
         }
     }
 
+
     // ========================___AI___===========================
 
 
+    /** Returns the Node with the lowest FCost from a Node List
+     * @param list
+     * @return
+     */
     public Node lowestFCost (List<Node> list){
         if (list.size() == 1){
             return list.get(0);
@@ -97,6 +105,10 @@ public class Enemy extends Character{
         return lowest;
     }
 
+    /** Returns a Node Array of the neighbour Nodes of a Node
+     * @param node
+     * @return
+     */
     public Node[] getNeighbours(Node node){
         Node[] array = new Node[8];
         int i = 0;
@@ -118,7 +130,13 @@ public class Enemy extends Character{
         return null;
     }
 
-    // vertical || horizontal = 10, diagonal = 14
+    /** Returns the GCost value of the last movement from Node to neighbour Node
+     * Vertical & Horizontal = 10
+     * Diagonal = 14
+     * @param node
+     * @param nodeAnterior
+     * @return
+     */
     public int gCostAnterior(Node node, Node nodeAnterior){
         if (node.getCoords()[0] == nodeAnterior.getCoords()[0] || node.getCoords()[1] == nodeAnterior.getCoords()[1]){
             return 10;      // Horizontal o Vertical
@@ -126,6 +144,10 @@ public class Enemy extends Character{
         return 14;          // Diagonal
     }
 
+    /** Returns the total GCost of a Node
+     * @param node
+     * @return
+     */
     public int calculateGCost (Node node){
         int res = 0;
         while (node.getAnterior() != null){
@@ -135,7 +157,12 @@ public class Enemy extends Character{
         return res;
     }
 
-    public boolean shorterPath(Node neighbour, Node current){
+    /** Returns true if the path from the current Node is shorter than the existing path
+     * @param neighbour
+     * @param current
+     * @return
+     */
+    public boolean shorterPath (Node neighbour, Node current){
 
         Node node = neighbour;
         node.setgCost(calculateGCost(node));
@@ -155,6 +182,11 @@ public class Enemy extends Character{
         return false;
     }
 
+    /** Returns true if a Node with certain coordinates is contained in a Node List
+     * @param list
+     * @param coords
+     * @return
+     */
     public boolean inList (List<Node> list, int[] coords){
         for (Node node : list){
             if (Arrays.equals(coords,node.getCoords())){
@@ -164,6 +196,11 @@ public class Enemy extends Character{
         return false;
     }
 
+    /** Returns true if the Node is walkable to a certain enemy
+     * @param map
+     * @param node
+     * @return
+     */
     public boolean canWalk (Map map, Node node){
         if (this.ghost){
             if (map.valorPos(node.getCoords()[0],node.getCoords()[1]) == 6){
@@ -185,6 +222,10 @@ public class Enemy extends Character{
         return true;
     }
 
+    /** Calculates the final path
+     * @param end
+     * @return
+     */
     public List<Node> finalPath(Node end){
         List<Node> path = new ArrayList<>();
         List<Node> res = new ArrayList<>();
@@ -203,8 +244,11 @@ public class Enemy extends Character{
         return res;
     }
 
-    // retorna una lista de los pasos del enemigo o null si no se mueve o no encuentra camino
-    // A* PathFinding
+    /** Returns a Node List with the shortest path, each Node being an step, returns null if there is no possible path or the enemy will not move
+     * Uses the A* PathFinding method
+     * @param map
+     * @return
+     */
     public List<Node> ai (Map map){
         List<Node> open = new ArrayList<>();
         List<Node> closed = new ArrayList<>();
@@ -263,56 +307,4 @@ public class Enemy extends Character{
         }
         return null;    // No path found
     }
-
-    /*public List<Node> ai2 (Map map){
-        List<Node> open = new ArrayList<>();
-        List<Node> closed = new ArrayList<>();
-
-        Node startNode = new Node(this.getPosition());
-        Node endNode = new Node(this.objectivePos);
-        startNode.calculateHCost(objectivePos);
-        startNode.calculateFCost();
-        open.add(startNode);        // Beginning gam.sua.Node
-
-        int gCostTotal = 0;
-
-        if (map.isNear(this.getPosition(), 1, 2) != null){       // Is 1 position away
-            return null;
-        }
-
-        while (open.size() > 0){
-            Node current = lowestFCost (open);
-
-            if ((current.getCoords()[0] == this.objectivePos[0] && current.getCoords()[1] == this.objectivePos[1])){   // The end is reached
-                List<Node> path = finalPath(endNode);
-                return path;
-            }
-
-            open.remove(current);
-            closed.add(current);
-
-            for (Node neighbour:getNeighbours(current)){
-                if ((map.valorPos(neighbour.getCoords()[0],neighbour.getCoords()[1]) != 0 && !this.ghost) || closed.contains(neighbour)){
-                    continue;
-                }
-                if (neighbour.getCoords()[0] < 0 || neighbour.getCoords()[0] >= 25 || neighbour.getCoords()[1] < 0 || neighbour.getCoords()[1] >= 45){      // Out of Map
-                    continue;
-                }
-                int tentativeGCost = current.getgCost() + gCostAnterior(current,neighbour);
-                if (tentativeGCost < (gCostTotal + gCostAnterior(current,neighbour)) || !open.contains(neighbour)){
-                    neighbour.setAnterior(current);
-                    neighbour.setgCost(tentativeGCost);
-                    neighbour.calculateHCost(this.objectivePos);
-                    neighbour.calculateFCost();
-                    endNode = neighbour;
-                    gCostTotal = gCostAnterior(current,neighbour);
-
-                    if (!open.contains(neighbour)){
-                        open.add(neighbour);
-                    }
-                }
-            }
-        }
-        return null;    // No path found
-    }*/
 }

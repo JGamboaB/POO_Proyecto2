@@ -9,13 +9,9 @@ public class Node {
     private int[] coords;
     private Node anterior;
 
-    public Node(){
-        this.coords = null;
-        this.anterior = null;
-        this.gCost = 0;
-        this.hCost = 0;
-        this.fCost = 0;
-    }
+    /** Constructor
+     * @param cor
+     */
     public Node(int[] cor){
         this.coords = cor;
         this.anterior = null;
@@ -25,19 +21,19 @@ public class Node {
     }
 
 
-    // getters y setters
+    /** Getters & Setters
+     * @return
+     */
     public int[] getCoords() {
         return coords;
     }
     public int getfCost() {
         return fCost;
     }
-    public int getgCost() { return gCost; }
-    public int gethCost() { return hCost; }
-
     public Node getAnterior() {
         return anterior;
     }
+
     public void setAnterior(Node anterior) {
         this.anterior = anterior;
     }
@@ -45,10 +41,9 @@ public class Node {
         this.gCost = gCost;
     }
 
-    public void setfCost(int fCost) {
-        this.fCost = fCost;
-    }
 
+    /** Calculates and updates the FCost
+     */
     public void calculateFCost (){
         if (coords == null){
             fCost = 0;
@@ -57,12 +52,16 @@ public class Node {
     }
 
 
-    /*  1 2 3
-        4 5 6
-        7 8 9
-
-     5 = posicion actual  */
-
+    /** Calculates and updates the HCost
+     *
+     * 1 2 3
+     * 4 5 6
+     * 7 8 9
+     *
+     * 5 = current position
+     *
+     * @param end
+     */
     public void calculateHCost (int[] end){
         boolean flag = true;
         int[] c = coords;
