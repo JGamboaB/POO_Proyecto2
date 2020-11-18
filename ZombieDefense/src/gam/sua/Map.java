@@ -65,6 +65,9 @@ public class Map{
 
     private final Random random = new Random();
 
+    private final Music bgMusic = new Music();
+    private final Music soundEffects = new Music();
+
     /**
      * Constructor
      * @throws IOException if there's an error by getting the font.
@@ -95,6 +98,8 @@ public class Map{
         updateFrame();
 
         frame.setVisible(true);
+
+        bgMusic.playBGMusic();
 
     }
 
@@ -407,7 +412,7 @@ public class Map{
             //Equip Item
             if (action == 2){
                 if (java.lang.Character.isDigit(e.getKeyChar())){
-                    if (Integer.parseInt(String.valueOf(e.getKeyChar())) <= sharedInventory.size()){
+                    if (Integer.parseInt(String.valueOf(e.getKeyChar())) < sharedInventory.size()){
                         equipItem(Integer.parseInt(String.valueOf(e.getKeyChar())));
                         resetMenu();
                     }
@@ -421,6 +426,7 @@ public class Map{
                 doneActs = new int[]{0, 0, 0};
                 updateFrame();
                 attacked = new int[]{0, 0, 0}; //
+                soundEffects.playSoundEffects(5);
             }
         }
     };
@@ -503,6 +509,7 @@ public class Map{
             int pos = random.nextInt(inv.size());
             addToSharedInv(inv.get(pos));
             matrix[r+rAdd][c+cAdd] = 1;
+            soundEffects.playSoundEffects(4);
             return;
         }
 
@@ -515,6 +522,7 @@ public class Map{
             int pos = random.nextInt(inv.size());
             addToSharedInv(inv.get(pos));
             valueBefore = 0;
+            soundEffects.playSoundEffects(4);
         }
 
         player.setPosition(new int[]{r+rAdd,c+cAdd});
@@ -522,6 +530,7 @@ public class Map{
         updateMatrix(r+rAdd,c+cAdd,2);
 
         --steps;
+        soundEffects.playSoundEffects(0);
         if (steps == 0){
             doneActs[0] = 1;
             action = -1;
@@ -598,6 +607,10 @@ public class Map{
                 addToSharedInv(InvObject.getItemById(8));
                 matrix[r][c] = 1;
             }
+
+            //Sound Effect
+            soundEffects.playSoundEffects(1);
+
         } else {
             doneActs[1] = 0;
         }
@@ -670,8 +683,8 @@ public class Map{
     public boolean weaponAlreadyEquipped(Weapons weapon, Player player){
         int DMG;
         for (Player otherPlayer: Players){
-            if (otherPlayer.getId() == player.getId())
-                continue;
+            //if (otherPlayer.getId() == player.getId())
+            //    continue;
 
             DMG = (otherPlayer.getDoubleDamage())? otherPlayer.getDMG()/2 : otherPlayer.getDMG();
 
@@ -887,6 +900,8 @@ public class Map{
 
         objective.subtractHealth(enemy.getDamage()*multi);   // Attack
 
+        soundEffects.playSoundEffects(2);
+
         if (objective.isDead()){
             objective.setHealth(0);
             int[] pos = objective.getPosition();
@@ -1069,12 +1084,11 @@ public class Map{
 
 /*
 OPTIONAL:
-1. ADDITIONAL EFFECTS (ATTACK, SOUND)                      * oldHealth != health -> Image of the player on red
-2. MUSIC
-3. TELEPORTATION
-4. MOVEMENT ANIMATIONS (PLAYER, ENEMY) *ENEMY CHECK IF WAIT FUNCTION IS COMPATIBLE WITH SWING, AND SWING VISUALS WITH LOOPS.
-5. BOSS
-6. MENU IMAGES WEAPONS
+1. MUSIC
+2. TELEPORTATION
+3. MOVEMENT ANIMATIONS (PLAYER, ENEMY) *ENEMY CHECK IF WAIT FUNCTION IS COMPATIBLE WITH SWING, AND SWING VISUALS WITH LOOPS.
+4. BOSS
+5. MENU IMAGES WEAPONS
 *SLIME REVIVE?????
 *BALANCE ENEMY DAMAGE & ABILITIES
  */
