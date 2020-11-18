@@ -48,11 +48,14 @@ public class Map{
 
     private final ImageIcon attackArea = new ImageIcon("images\\attack.png");
     private final ImageIcon shine = new ImageIcon("images\\shine.png");
+    private final ImageIcon soundIMG = new ImageIcon("images\\sound.png");
+    private final ImageIcon attackedIMG = new ImageIcon("images\\attackIMG.png");
 
     //Variables
     private int round = 0;
     private int action = -1; //0 move, 1 attack, 2 equip
     private int[] doneActs = new int[]{0,0,0};
+    private int[] attacked = new int[]{0,0,0};
 
     private int playersTurn = 0; //0,1,2
     private final int[] numEnemies = new int[]{0,0,0,0}; //Skeleton, Slime, Zombie, Ghost
@@ -198,7 +201,15 @@ public class Map{
 
                             if (player.getPosition()[0] == r && player.getPosition()[1] == c) {
                                 playerImgs[player.getId()].setBounds(c * 32, r * 32, 32, 32);
-                                panel.add(playerImgs[player.getId()]);
+                                //panel.add(playerImgs[player.getId()]);
+
+                                if (attacked[player.getId()] == 1){
+                                    JLabel attackedLabel = new JLabel();
+                                    attackedLabel.setIcon(attackedIMG);
+                                    attackedLabel.setBounds(c*32,r*32,32,32);
+                                    panel.add(attackedLabel);
+                                }panel.add(playerImgs[player.getId()]);
+
                             }
 
                         } break;
@@ -229,6 +240,13 @@ public class Map{
                         ghost.setBounds(c*32,r*32,32,32);
                         ghost.setIcon(enemyImgs[3]);
                         panel.add(ghost);
+                        break;
+
+                    case 9:
+                        JLabel sound = new JLabel();
+                        sound.setBounds(c*32,r*32,32,32);
+                        sound.setIcon(soundIMG);
+                        panel.add(sound);
                         break;
 
                     case 10:
@@ -402,6 +420,7 @@ public class Map{
                 action = -1;
                 doneActs = new int[]{0, 0, 0};
                 updateFrame();
+                attacked = new int[]{0, 0, 0}; //
             }
         }
     };
@@ -859,8 +878,12 @@ public class Map{
             objective.newIsPoisoned(3);
         }
 
-        int[] posibleMulti = {0,1,1};
-        int multi = (objective.getCanEvade())? posibleMulti[Math.abs(random.nextInt()%3)]:1;
+        int[] possibleMulti = {0,1,1};
+        int multi = (objective.getCanEvade())? possibleMulti[Math.abs(random.nextInt()%3)]:1;
+
+        if (multi == 1)
+            attacked[objective.getId()] = 1;
+
 
         objective.subtractHealth(enemy.getDamage()*multi);   // Attack
 
@@ -1045,11 +1068,6 @@ public class Map{
 
 
 /*
-MUST:
-DELETE EXTRAS                       D
-COMMENTS                            GD
-
-
 OPTIONAL:
 1. ADDITIONAL EFFECTS (ATTACK, SOUND)                      * oldHealth != health -> Image of the player on red
 2. MUSIC
