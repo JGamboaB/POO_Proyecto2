@@ -1031,6 +1031,10 @@ public class Map{
 
     // / / / / / / / / / / AI
 
+    /** Returns the first coordinates with a certain value, or null if there is none
+     * @param num
+     * @return
+     */
     public int[] findMatrix(int num){
         for (int r = 0; r < 25; r++) {
             for (int c = 0; c < 45; c++) {
@@ -1042,7 +1046,13 @@ public class Map{
         return null;
     }
 
-    public int[] isNear(int[] pos, int range, int val){     // returns the first value appearance or null if there is none
+    /** Returns the coordinates of the first value appearance in a range from a position or null if there is none
+     * @param pos
+     * @param range
+     * @param val
+     * @return
+     */
+    public int[] isNear(int[] pos, int range, int val){
         for (int r = 0; r < 25; r++) {
             for (int c = 0; c < 45; c++) {
                 if (r == pos[0] && c == pos[1]){
@@ -1060,6 +1070,12 @@ public class Map{
         return null;
     }
 
+    /** Returns true if the coordinates are in a range from a position
+     * @param pos
+     * @param range
+     * @param val
+     * @return
+     */
     public boolean isNearCoord(int[] pos, int range, int[] val){    // true if the coords are in range
         for (int r = 0; r < 25; r++) {
             for (int c = 0; c < 45; c++) {
@@ -1080,6 +1096,7 @@ public class Map{
 
     // / / / / / / / / / / CLASS
 
+    /** Main */
     public static void main(String[] args) throws IOException, FontFormatException {
         new Map();
     }
