@@ -266,77 +266,6 @@ public class Map{
         }
     }
 
-    //EXTRA
-    void charMatrix2(int id, char dir){
-        for (int r = 0; r < 25; r++){
-            for (int c = 0; c < 45; c++){
-
-                switch (matrix[r][c]){
-                    case 2:
-                        for (int i = 0; i < 3; i++){
-
-                            if (Players.get(i).getPosition()[0] == r && Players.get(i).getPosition()[1] == c){
-
-                                if (Players.get(i).getId() == i && steps > 1){
-                                    JLabel move = new JLabel(new ImageIcon("images\\CharIMG\\Movement\\"+id+dir+"png"));
-                                    move.setBounds(c*32,r*32,32,32);
-                                    panel.add(move);
-
-                                } else {
-                                    playerImgs[i].setBounds(c*32,r*32,32,32);
-                                    panel.add(playerImgs[i]);
-                                }
-                            }
-
-                        } break;
-
-                    case 3:
-                        Enemy enemy = getEnemyByPos(r,c);
-                        if (enemy == null){
-                            break;
-                        }
-
-                        JLabel skeleton = new JLabel();
-                        skeleton.setBounds(c*32,r*32,32,32);
-                        skeleton.setIcon(enemyImgs[0]);
-                        panel.add(skeleton);
-                        break;
-
-                    case 4:
-                        JLabel slime = new JLabel();
-                        slime.setBounds(c*32,r*32,32,32);
-                        slime.setIcon(enemyImgs[1]);
-                        panel.add(slime);
-                        break;
-
-                    case 5:
-                        JLabel zombie = new JLabel();
-                        zombie.setBounds(c*32,r*32,32,32);
-                        zombie.setIcon(enemyImgs[2]);
-                        panel.add(zombie);
-                        break;
-
-                    case 6:
-                        JLabel ghost = new JLabel();
-                        ghost.setBounds(c*32,r*32,32,32);
-                        ghost.setIcon(enemyImgs[3]);
-                        panel.add(ghost);
-                        break;
-
-                    case 10:
-                        JLabel itemOnFloor = new JLabel();
-                        itemOnFloor.setBounds(c*32,r*32,32,32);
-                        itemOnFloor.setIcon(shine);
-                        panel.add(itemOnFloor);
-                        break;
-                }
-
-            }
-        }
-        frame.revalidate();
-        frame.repaint();
-    }
-
 
     /** Starting position of the players and the starting inventory */
     void startingPos(){
@@ -656,7 +585,7 @@ public class Map{
         if (item.getId() < 7) //Only removes the Weapons from the possible items
             inv.remove(item);
 
-        if (item.getId() == 9){ //Validation for maximum 2 revives
+        if (item.getId() == 8){ //Validation for maximum 2 revives
             if (listAmount(item) == 2)
                 inv.remove(item);
         }
@@ -1032,8 +961,8 @@ public class Map{
     // / / / / / / / / / / AI
 
     /** Returns the first coordinates with a certain value, or null if there is none
-     * @param num
-     * @return
+     * @param num in matrix
+     * @return int[]
      */
     public int[] findMatrix(int num){
         for (int r = 0; r < 25; r++) {
@@ -1047,10 +976,10 @@ public class Map{
     }
 
     /** Returns the coordinates of the first value appearance in a range from a position or null if there is none
-     * @param pos
-     * @param range
-     * @param val
-     * @return
+     * @param pos int[]
+     * @param range int
+     * @param val int
+     * @return int[]
      */
     public int[] isNear(int[] pos, int range, int val){
         for (int r = 0; r < 25; r++) {
@@ -1071,10 +1000,10 @@ public class Map{
     }
 
     /** Returns true if the coordinates are in a range from a position
-     * @param pos
-     * @param range
-     * @param val
-     * @return
+     * @param pos int[]
+     * @param range int
+     * @param val int[]
+     * @return boolean
      */
     public boolean isNearCoord(int[] pos, int range, int[] val){    // true if the coords are in range
         for (int r = 0; r < 25; r++) {

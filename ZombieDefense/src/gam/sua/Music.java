@@ -20,7 +20,7 @@ public class Music {
 
             //Lower The volume
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-10.0f);
+            gainControl.setValue(-12.0f);
 
             clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
