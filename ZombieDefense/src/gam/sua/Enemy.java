@@ -209,7 +209,7 @@ public class Enemy extends Character{
         } else {
             if (map.valorPos(node.getCoords()[0],node.getCoords()[1]) != 0 && map.valorPos(node.getCoords()[0],node.getCoords()[1]) != 9 && map.valorPos(node.getCoords()[0],node.getCoords()[1]) != 10){
                 if (map.valorPos(node.getCoords()[0],node.getCoords()[1]) == 2){
-                    if (map.isNearCoord(node.getCoords(),5,this.getPosition())){
+                    if (map.isNearCoord(node.getCoords(),1,this.getPosition())){
                         return false;
                     } else {
                         return true;
